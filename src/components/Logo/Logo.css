@@ -1,0 +1,18 @@
+.logo-link {
+    height: 38px;
+    width: 38px;
+}
+
+.logo-link:hover {
+    cursor: pointer;
+}
+
+.logo-link__image {
+    width: 38px;
+    height: 38px;
+    transition: transform ease 1s;
+}
+
+.logo-link__image:hover {
+    transform: rotate(360deg);
+}
