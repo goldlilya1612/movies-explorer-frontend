@@ -4,7 +4,7 @@ import "./SearchForm.css";
 function SearchForm() {
     return ( 
             <form className="search-form">
-                <input placeholder="Фильм" className="search-form__input" type="search"></input>
+                <input placeholder="Фильм" className="search-form__input" type="search" required></input>
                 <button className="search-form__button" type="submit"></button>
                 <div className="search-form__checkbox-wrapper">
                     <FilterCheckbox />

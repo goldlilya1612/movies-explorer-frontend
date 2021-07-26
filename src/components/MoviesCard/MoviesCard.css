@@ -11,6 +11,10 @@
     object-fit: cover;
 }
 
+.movies-card__image {
+    cursor: pointer;
+}
+
 .movies-card__button {
     border: none;
     position: absolute;

@@ -21,6 +21,12 @@
     line-height: 17px;
 
     color: #8b8b8b;
+
+    transition: all ease 1s;
+}
+
+.search-form__input:focus {
+    background-color: #131313;
 }
 
 .search-form__button {
