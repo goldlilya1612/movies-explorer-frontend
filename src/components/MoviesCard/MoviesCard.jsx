@@ -2,10 +2,11 @@ import "./MoviesCard.css";
 import image from '../../images/movie-image.jpg';
 
 
+// isNotSavedMoviesPage = false -- кнопка с крестиком;
+// isNotSavedMoviesPage = true && isAdded = false -- кнопка сохранить
+// isNotSavedMoviesPage = true && isAdded = true -- кнопка c галочкой
 
-// Если изменить isAdded на false, то появится кнопка сохранить на странице /movies
-// Если изменить isAdded на true, то появится красная кнопка c галочкой на странице /movies
-const isNotSavedMoviesPage = window.location.pathname === '/movies';
+const isNotSavedMoviesPage = true;
 const isAdded = false;
 
 function MoviesCard({card}) {
