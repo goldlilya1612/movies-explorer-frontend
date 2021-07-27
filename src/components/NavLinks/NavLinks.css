@@ -1,0 +1,156 @@
+.navigation {
+    height: 43px;
+    display: flex;
+    align-items: center;
+}
+
+.navigation__link {
+    text-decoration: none;
+    font-weight: 500;
+    color: white;
+    position: relative;
+}
+
+.navigation__link-item {
+    display: flex;
+    align-items: center;
+}
+
+.navigation__link:hover {
+    cursor: pointer;
+}
+
+.navigation__link_active {
+    border-bottom: 2px solid white;
+}
+
+.navigation__link-item_authorized {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.navigation__link-item_account {
+    position: absolute;
+    bottom: 48px;
+    margin-top: 24px;
+}
+
+.navigation__links {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.navigation__links_authorized {
+    flex-direction: column;
+    align-items: center;
+    margin: 144px 0 0 0;
+}
+
+.navigation__link-item .navigation__profile-button {
+    width: 100px;
+    height: 30px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: white;
+    background-color: #202020;
+    border: none;
+    padding: 0;
+    transition: opacity ease 0.5s;
+}
+
+.navigation__profile-button:hover {
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.navigation__link_authorized {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+    text-align: center;
+    transition: opacity ease 0.5s;
+}
+
+.navigation__link_authorized:hover {
+    opacity: 0.7;
+}
+
+.profile-button__icon {
+    width: 26px;
+    height: 30px;
+    border-radius: 4px;
+    background-color: #313131;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-image: url("../../images/account-icon.svg");
+    background-size: 11.5px 14px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+@media screen and (min-width: 650px) {
+    .navigation__links_authorized {
+        margin: 157px 0 0 0;
+    }
+
+    .navigation__link-item_authorized {
+        margin-bottom: 28px;
+    }
+
+    .navigation__link-item_account {
+        margin-top: 28px;
+        bottom: 92px;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .navigation__links {
+        margin: 0;
+    }
+
+    .navigation__link-item {
+        margin-bottom: 0;
+    }
+
+    .navigation__link-item_account {
+        position: inherit;
+        margin-top: 0;
+    }
+
+    .navigation__links {
+        flex-direction: row;
+        margin-bottom: 0;
+    }
+
+    .navigation__link_authorized {
+        font-size: 14px;
+        line-height: 18px;
+        margin-right: 20px;
+    }
+
+    .navigation__profile-button {
+        width: 100px;
+        height: 30px;
+        text-align: left;
+        font-size: 14px;
+        line-height: 18px;
+        font-weight: 500;
+        color: white;
+        background-color: #202020;
+        border: none;
+        padding: 0;
+        transition: opacity ease 0.5s;
+    }
+
+    .navigation__link_active {
+        border-bottom: none;
+    }
+}

@@ -1,0 +1,56 @@
+.movies__button {
+    background: #2f2f2f;
+    border-radius: 6px;
+    width: 300px;
+    height: 36px;
+    margin-top: 60px;
+    margin-bottom: 80px;
+    margin-right: calc((100% - 300px) / 2);
+    margin-left: calc((100% - 300px) / 2);
+    padding: 0;
+    border: none;
+
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+
+    color: #ffffff;
+    transition: opacity ease 0.5s;
+}
+
+.movies__button:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+@media screen and (min-width: 725px) {
+    .movies__button {
+        width: 630px;
+        margin-right: calc((100% - 630px) / 2);
+        margin-left: calc((100% - 630px) / 2);
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .movies__button {
+        width: 708px;
+        margin-right: calc((100% - 708px) / 2);
+        margin-left: calc((100% - 708px) / 2);
+    }
+}
+
+@media screen and (min-width: 1137px) {
+    .movies__button {
+        width: 1077px;
+        margin-right: calc((100% - 1077px) / 2);
+        margin-left: calc((100% - 1077px) / 2);
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    .movies__button {
+        width: 1140px;
+        margin-right: calc((100% - 1140px) / 2);
+        margin-left: calc((100% - 1140px) / 2);
+    }
+}
