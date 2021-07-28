@@ -29,7 +29,7 @@ function Register({ onRegister }) {
                 <Logo />
                 <h1 className="section-with-form__title">Добро пожаловать!</h1>
             </div>
-            <form onSubmit={handleSubmit} className="section-with-form__form section-with-form__form_register">
+            <form onSubmit={handleSubmit} className="section-with-form__form">
                 <label className="section-with-form__label" htmlFor="name-register">Имя
                     <input required onChange={handleChange} value={data.name} type="text" name="name" id="name-register" className="section-with-form__input"></input>
                     <span className="section-with-form__error">Что-то пошло не так...</span>
@@ -42,7 +42,7 @@ function Register({ onRegister }) {
                     <input required onChange={handleChange} value={data.password} type="password" name="password" id="password-register" className="section-with-form__input"></input>
                     <span className="section-with-form__error">Что-то пошло не так...</span>
                 </label>
-                <ButtonBlock content = { REGISTER }/>
+                <ButtonBlock content = { REGISTER } name='register'/>
             </form>
         </section>
     );

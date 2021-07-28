@@ -11,7 +11,7 @@ function Login() {
                 <Logo />
                 <h1 className="section-with-form__title">Рады видеть!</h1>
             </div>
-            <form className="section-with-form__form section-with-form__form_login">
+            <form className="section-with-form__form">
                 <label className="section-with-form__label" htmlFor="email-login">E-mail
                     <input required type="email" id="email-login" className="section-with-form__input"></input>
                 </label>
@@ -19,8 +19,8 @@ function Login() {
                     <input required type="password" id="password-login" className="section-with-form__input"></input>
                     <span className="section-with-form__error">Что-то пошло не так...</span>
                 </label>
+                <ButtonBlock content = { LOGIN } name='login'/>
             </form>
-            <ButtonBlock content = { LOGIN }/>
         </section>
     );
 }
