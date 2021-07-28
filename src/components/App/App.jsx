@@ -12,6 +12,7 @@ import Profile from "../Profile/Profile";
 
 import * as auth from "../../utils/auth";
 import { useState } from "react";
+import ErrPopup from "../ErrPopup/ErrPopup";
 //import Preloader from "../Preloader/Preloader";
 //import Error from "../Error/Error";
 
@@ -19,7 +20,11 @@ function App() {
 
     const history = useHistory(); 
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
+    const handlePopupClose = () => {
+        setIsPopupOpen(false);
+    }
 
     const handleRegister = (data) => {
         const { email, password, name } = data;
@@ -27,7 +32,14 @@ function App() {
             .then(() => {
                 history.push('/signin');
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                if (err === 'Ошибка: 409') {
+                    setErrorMessage('Пользователь с таким email уже зарегистрирован');
+                } else if (err === 'Ошибка: 400') {
+                    setErrorMessage('Ошибка валидации');
+                }
+                setIsPopupOpen(true);
+            });
     }
 
     return (
@@ -59,6 +71,8 @@ function App() {
                     <Register onRegister={handleRegister} />
                 </Route>
             </Switch>
+
+            <ErrPopup isOpen={isPopupOpen} onClose={handlePopupClose} errorMessage={errorMessage}/>
         </div>
     );
 }
