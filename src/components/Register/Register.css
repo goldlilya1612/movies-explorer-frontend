@@ -37,7 +37,7 @@
     font-weight: normal;
     font-size: 10px;
     line-height: 12px;
-    height: 90px;
+    height: 102px;
 
     color: #8b8b8b;
 
@@ -105,6 +105,15 @@
 .section-with-form__button:hover {
     background-color: #8eb1ec;
     cursor: pointer;
+}
+
+.section-with-form__button_invalid {
+    background-color: #f8f8f8;
+    color: #c2c2c2;
+}
+
+.section-with-form__button_invalid:hover {
+    background-color: #f8f8f8;
 }
 
 .section-with-form__text {
