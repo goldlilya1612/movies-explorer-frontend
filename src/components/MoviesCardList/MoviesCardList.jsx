@@ -1,11 +1,10 @@
 import MoviesCard from "../MoviesCard/MoviesCard";
 import "./MoviesCardList.css";
-import { cards } from "../../utils/constants";
 
-function MoviesCardList() {
+function MoviesCardList({list}) {
     return (
         <section className="movies-card-list">
-            {cards. map(card => (<MoviesCard card={card}/>) )}
+            {list.map(movie => (<MoviesCard key={movie.id} movie={movie}/>) )}
         </section>
     );
 }

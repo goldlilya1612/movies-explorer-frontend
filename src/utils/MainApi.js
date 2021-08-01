@@ -1,4 +1,4 @@
-class Api {
+class MainApi {
     constructor(options) {
         this._baseUrl = options.baseUrl;
         this._headers = options.headers;
@@ -32,7 +32,7 @@ class Api {
     }
 }
 
-export const api = new Api({
+export const mainApi = new MainApi({
     baseUrl: "http://localhost:3005",
     //baseUrl: "https://mesto.lilya.nomoredomains.club",
 });

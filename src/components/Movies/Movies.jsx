@@ -4,14 +4,13 @@ import Header from "../Header/Header";
 import "./Movies.css";
 import Footer from "../Footer/Footer";
 
-function Movies() {
-    console.log(localStorage.getItem('loggedIn'));
+function Movies({onSearch, list}) {
     return (
         <> 
             <Header />
             <section className="movies">
-                <SearchForm />
-                <MoviesCardList />
+                <SearchForm onSearch={onSearch} />
+                <MoviesCardList list={list}/>
                 <button className="movies__button">Еще</button>
             </section>
             <Footer />

@@ -42,7 +42,7 @@ function Register({ onRegister }) {
           setIsValid(newIsValid);
         },
         [setData, setErrors, setIsValid]
-      );
+    );
 
     return (
         <section className="section-with-form">
