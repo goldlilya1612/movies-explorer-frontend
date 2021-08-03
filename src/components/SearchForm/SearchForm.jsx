@@ -2,7 +2,7 @@ import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 import "./SearchForm.css";
 import { useCallback, useState } from "react";
 
-function SearchForm({onSearch}) {
+function SearchForm({onSearch, onCheckboxClick}) {
 
     const [data, setData] = useState({film: ''});
 
@@ -27,12 +27,13 @@ function SearchForm({onSearch}) {
         resetForm();
     }
 
+
     return ( 
             <form onSubmit={handleSubmit} className="search-form">
                 <input onChange={handleChange} placeholder="Фильм" name="film" value={data.film} className="search-form__input" type="search" required></input>
                 <button className="search-form__button" type="submit"></button>
                 <div className="search-form__checkbox-wrapper">
-                    <FilterCheckbox />
+                    <FilterCheckbox onCheckboxClick={onCheckboxClick}/>
                     <p className="search-form__checkbox-text">Короткометражки</p>
                 </div> 
             </form>   

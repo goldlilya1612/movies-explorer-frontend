@@ -1,3 +1,15 @@
+.movies {
+    position: relative;
+    min-height: calc(100vh - 74px - 268px);
+}
+
+.movies__filter-error {
+    color: #a0a0a0;
+    text-align: center;
+    margin: 0;
+    margin-top: calc((100vh - 268px - 74px - 238px) / 2);
+}
+
 .movies__button {
     background: #2f2f2f;
     border-radius: 6px;
@@ -32,6 +44,14 @@
 }
 
 @media screen and (min-width: 768px) {
+    .movies {
+        min-height: calc(100vh - 74px - 193px);
+    }
+
+    .movies__filter-error {
+        margin-top: calc((100vh - 237px - 74px - 174px) / 2);
+    }
+
     .movies__button {
         width: 708px;
         margin-right: calc((100% - 708px) / 2);

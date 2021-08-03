@@ -3,7 +3,6 @@ import { Route, Redirect } from "react-router-dom";
 
 function ProtectedRoute({ component: Component, ...props }) {
     const isLoggedIn = localStorage.getItem('loggedIn');
-    console.log(isLoggedIn)
     return (
         <Route>
             {() =>

@@ -13,10 +13,8 @@ import * as auth from "../../utils/auth";
 import { useEffect, useState } from "react";
 import {CurrentUserContext} from '../../contexts/currentUserContext';
 import {mainApi} from '../../utils/MainApi';
-import { moviesApi } from "../../utils/MoviesApi";
 import ErrPopup from "../ErrPopup/ErrPopup";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
-//import Preloader from "../Preloader/Preloader";
 import Error from "../Error/Error";
 
 function App() {
@@ -25,7 +23,6 @@ function App() {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [currentUser, setCurrentUser] = useState({name:'', email:''});
-    const [moviesList, setMoviesList] = useState([]);
     const loggedIn = localStorage.getItem('loggedIn');
 
     useEffect(() => {
@@ -111,12 +108,6 @@ function App() {
             })
     }
 
-    const handleSearch = (data) => {
-        moviesApi.getMovies()
-            .then((movies) => setMoviesList(movies))
-            .catch((err) => { console.log(`Ошибка: ${err}`)})
-    }
-
     //проверка токена
     const tokenCheck = () => {
         if (localStorage.getItem('token')) {
@@ -129,8 +120,10 @@ function App() {
     }}
 
     const handleLogout = () => {
+        localStorage.clear();
+        /*
         localStorage.removeItem('token');
-        localStorage.removeItem('loggedIn');
+        localStorage.removeItem('loggedIn'); */
         history.push('/signin');
     }
 
@@ -141,8 +134,8 @@ function App() {
                     <ProtectedRoute 
                         path="/movies"
                         component={Movies}
-                        onSearch={handleSearch}
-                        list={moviesList}
+                        setIsPopupOpen={setIsPopupOpen}
+                        setErrorMessage={setErrorMessage}
                         >
                     </ProtectedRoute>
                     <ProtectedRoute 
