@@ -21,14 +21,11 @@ function Movies({setIsPopupOpen, setErrorMessage }) {
 
     useEffect(() => {
         if (localStorage.getItem('foundMovies')) {
-            setIsPreloaderVisible(true);
-
-            setFoundMovies(JSON.parse(foundMoviesList));
-
-            setIsMoviesVisible(true);
             setIsPreloaderVisible(false);
+            setFoundMovies(JSON.parse(foundMoviesList));
+            setIsMoviesVisible(true);
         }    
-    }, [foundMoviesList])
+    }, [foundMoviesList, shortMovies])
 
     //некоторые фильмы могут не иметь постера, русского названия и т.д. подумай над этим в данной функции
     const handleSearch = (data) => {
@@ -36,11 +33,11 @@ function Movies({setIsPopupOpen, setErrorMessage }) {
         setIsPreloaderVisible(true);
 
         handleFilter(keyword);
-
-        setIsPreloaderVisible(false);
         setIsMoviesVisible(true);
     }
+    
 
+    //поиск по ключевому слову
     const handleFilter = (keyword) => {
         moviesApi.getMovies()
             .then((movies) => {
@@ -51,26 +48,43 @@ function Movies({setIsPopupOpen, setErrorMessage }) {
                     }
                     return movie.nameRU.toLowerCase().includes(keyword.toLowerCase()) || movie.nameEN.toLowerCase().includes(keyword.toLowerCase())
                 });
-                if (filtredMovies.length === 0) {
-                    console.log(filtredMovies);
-                    setFilterError(true);
-                } 
+                if (!isChecked) {
+                    // спрятать прелоудер, если найденные фильмы совпадают с найденными ранее на одну итерацию фильмами 
+                    if (JSON.stringify(filtredMovies) === localStorage.foundMovies) {
+                        setIsPreloaderVisible(false);
+                    // вывести ошибку, если фильмы не прошли фильтр по слову
+                    } else if (filtredMovies.length === 0) {
+                        setFilterError(true);
+                    } 
+                } else {
+                    const shortFiltredMovies = filtredMovies.filter(movie => {
+                        return movie.duration < 40;
+                    })
+                    setShortMovies(shortFiltredMovies);
+                }
                 localStorage.setItem('foundMovies', JSON.stringify(filtredMovies));
                 setFoundMovies(filtredMovies);
             })
     }
 
+
+    //клик по переключателю
     const handleCheckboxClick = (isChecked) => {
         setFilterError(false);
-        const shortMoviesList = foundMovies.filter((movie) => {
-            return movie.duration < 40;
-        })
-        if (shortMoviesList.length === 0 && isChecked) {
-            setFilterError(true);
-        } else {
-            setShortMovies(shortMoviesList);
+        setIsPreloaderVisible(true);
+        if (isChecked) {
+            const shortMoviesList = foundMovies.filter((movie) => {
+                return movie.duration < 40;
+            })
+            //если нет короткометражек
+            if (shortMoviesList.length === 0) {
+                setFilterError(true);
+            } else {
+                setShortMovies(shortMoviesList);
+            }
         }
         setIsChecked(isChecked);
+        setIsPreloaderVisible(false)
     }
 
     /*
@@ -83,7 +97,7 @@ function Movies({setIsPopupOpen, setErrorMessage }) {
             <Preloader isPreloaderVisible={isPreloaderVisible}/>
             <Header />
             <section className="movies">
-                <SearchForm onSearch={handleSearch} onCheckboxClick={handleCheckboxClick} />
+                <SearchForm onSearch={handleSearch} onCheckboxClick={handleCheckboxClick}/>
                 {
                     filterError ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) :
                         isChecked ? (<MoviesCardList list={shortMovies} isMoviesVisible={isMoviesVisible}/>) : 

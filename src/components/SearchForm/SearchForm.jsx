@@ -12,6 +12,7 @@ function SearchForm({onSearch, onCheckboxClick}) {
         setData({...data, [name]: value})
     }
 
+    /*
     const resetForm = useCallback(
         (newData = {
             film: '',
@@ -19,12 +20,12 @@ function SearchForm({onSearch, onCheckboxClick}) {
           setData(newData);
         },
         [setData]
-    );
+    ); */
 
     const handleSubmit = (e) => {
         e.preventDefault();
         onSearch(data);
-        resetForm();
+        //resetForm();
     }
 
 
