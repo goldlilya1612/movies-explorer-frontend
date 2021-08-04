@@ -135,7 +135,7 @@ function App() {
                     </ProtectedRoute>
                     <ProtectedRoute 
                         path="/saved-movies"
-                        component={Movies}>
+                        component={SavedMovies}>
                     </ProtectedRoute>
                     <ProtectedRoute 
                         path='/profile'

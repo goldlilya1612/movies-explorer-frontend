@@ -11,36 +11,21 @@ import {mainApi} from '../../utils/MainApi';
 function Movies() {
 
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
-    const [isMoviesVisible, setIsMoviesVisible] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
     const [foundMovies, setFoundMovies] = useState([]);
     const [shortMovies, setShortMovies] = useState([]);
-    const [savedMovies, setSavedMovies] = useState([]);
     const [filterError, setFilterError] = useState(false);
 
     const path = window.location.pathname;
     const foundMoviesList = localStorage.foundMovies;
-    const loggedIn = localStorage.getItem('loggedIn');
-
-
-    console.log(savedMovies);
 
     //TODO: убрать условие
     useEffect(() => {
         if (localStorage.getItem('foundMovies')) {
             setIsPreloaderVisible(false);
             setFoundMovies(JSON.parse(foundMoviesList));
-            setIsMoviesVisible(true);
         }    
-    }, [foundMoviesList, shortMovies])
-
-    useEffect(() => {
-        mainApi.getSavedMovies(localStorage.getItem('token'))
-            .then((movies) => {
-                setSavedMovies(movies);
-                setIsMoviesVisible(true);
-            });
-    }, [path]) 
+    }, [foundMoviesList])
 
     //некоторые фильмы могут не иметь постера, русского названия и т.д. подумай над этим в данной функции
     const handleSearch = (data) => {
@@ -48,21 +33,25 @@ function Movies() {
         setIsPreloaderVisible(true);
 
         handleFilter(keyword);
-        setIsMoviesVisible(true);
+    }
+
+    const filterMovies = (movies, keyword) => {
+        const filtredMovies = movies.filter(movie => {
+            if (movie.nameEN === null) {
+                movie.nameEN = movie.nameRU;
+                
+            }
+            return movie.nameRU.toLowerCase().includes(keyword.toLowerCase()) || movie.nameEN.toLowerCase().includes(keyword.toLowerCase())
+        });
+        return filtredMovies
     }
     
-
     //поиск по ключевому слову
     const handleFilter = (keyword) => {
-        moviesApi.getMovies()
+        if (path === '/movies') {
+            moviesApi.getMovies()
             .then((movies) => {
-                const filtredMovies = movies.filter(movie => {
-                    if (movie.nameEN === null) {
-                        movie.nameEN = movie.nameRU;
-                        
-                    }
-                    return movie.nameRU.toLowerCase().includes(keyword.toLowerCase()) || movie.nameEN.toLowerCase().includes(keyword.toLowerCase())
-                });
+                const filtredMovies = filterMovies(movies, keyword);
                 if (!isChecked) {
                     // спрятать прелоудер, если найденные фильмы совпадают с найденными ранее на одну итерацию фильмами 
                     if (JSON.stringify(filtredMovies) === localStorage.foundMovies) {
@@ -80,8 +69,8 @@ function Movies() {
                 localStorage.setItem('foundMovies', JSON.stringify(filtredMovies));
                 setFoundMovies(filtredMovies);
             })
+        }
     }
-
 
     //клик по переключателю
     const handleCheckboxClick = (isChecked) => {
@@ -90,7 +79,7 @@ function Movies() {
         if (isChecked) {
             const shortMoviesList = foundMovies.filter((movie) => {
                 return movie.duration < 40;
-            })
+            });
             //если нет короткометражек
             if (shortMoviesList.length === 0) {
                 setFilterError(true);
@@ -99,9 +88,8 @@ function Movies() {
             }
         }
         setIsChecked(isChecked);
-        setIsPreloaderVisible(false)
+        setIsPreloaderVisible(false);
     }
-
 
     const handleSaving = (movie) => {
 
@@ -139,49 +127,29 @@ function Movies() {
         })
         .catch((err) => console.log(`Ошибка: ${err}`)) 
     }
-    /*
-    const loadMore = () => {
-        console.log('click');
-    } */
 
     return (
         <> 
             <Preloader isPreloaderVisible={isPreloaderVisible}/>
             <Header />
-            {
-                path === '/saved-movies' && 
-                (<section className="saved-movies">
-                    <SearchForm onSearch={handleSearch} onCheckboxClick={handleCheckboxClick}/>
-                    <MoviesCardList 
-                        list={savedMovies}
-                        isMoviesVisible={isMoviesVisible}
-                    />
-                </section>)
-            }
-            {
-                path === '/movies' &&
-                (<section className="movies">
-                <SearchForm onSearch={handleSearch} onCheckboxClick={handleCheckboxClick}/>
-                    {
-                        filterError ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) :
-                            isChecked ? (<MoviesCardList 
+            <section className="movies">
+            <SearchForm onSearch={handleSearch} onCheckboxClick={handleCheckboxClick}/>
+                {
+                    filterError ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) :
+                        isChecked ? (<MoviesCardList 
+                                        onSave={handleSaving} 
+                                        list={shortMovies}
+                                    />) : 
+                                        foundMovies.length === 0 ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) : 
+                                        (<MoviesCardList 
                                             onSave={handleSaving} 
-                                            list={shortMovies}
-                                            isMoviesVisible={isMoviesVisible}
-                                        />) : 
-                                            foundMovies.length === 0 ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) : 
-                                            (<MoviesCardList 
-                                                onSave={handleSaving} 
-                                                list={foundMovies} 
-                                                isMoviesVisible={isMoviesVisible}
-                                            />)
-                    }
-                    {/*<button onClick={loadMore} className="movies__button">Еще</button> */}
-                </section>)
-            }
+                                            list={foundMovies} 
+                                        />)
+                }
+                {/*<button onClick={loadMore} className="movies__button">Еще</button> */}
+            </section>
             <Footer />
-        </>
-        
+        </> 
     );
 }
 

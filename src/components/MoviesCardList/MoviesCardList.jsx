@@ -1,10 +1,10 @@
 import MoviesCard from "../MoviesCard/MoviesCard";
 import "./MoviesCardList.css";
 
-function MoviesCardList({ list, isMoviesVisible, onSave }) {
+function MoviesCardList({ list, onSave }) {
 
     return (
-        <section className={`movies-card-list ${isMoviesVisible ? '' : 'movies-card-list_invisible'}`}>
+        <section className={`movies-card-list`}>
             {
                 window.location.pathname === '/movies' &&
                 list.map(movie => (<MoviesCard key={movie.id} movie={movie} onSave={onSave}/>))
