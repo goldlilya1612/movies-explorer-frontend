@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./MoviesCard.css";
 
 
@@ -8,17 +9,33 @@ import "./MoviesCard.css";
 const isNotSavedMoviesPage = true;
 const isAdded = false;
 
-function MoviesCard({movie}) {
+function MoviesCard({movie, onSave}) {
+    //const [isAdded, setIsAdded] = useState(false);
+
+    const handleSaving = () => {
+        onSave(movie);
+    }
 
     return (
         <div className="movies-card">
-            <a className="movies-card__link" href={`${movie.trailerLink}`} target="_blank" rel="noopener noreferrer">
-                <img className="movies-card__image" src={`https://api.nomoreparties.co${movie.image.url}`} alt="Фильм"></img>
-            </a>
-            { isNotSavedMoviesPage ? 
-                    isAdded ? (<button className="movies-card__button movies-card__button_added" type="submit"></button>)
-                    : (<button className="movies-card__button movies-card__button_save" type="submit">Сохранить</button>) 
-                : (<button className="movies-card__button movies-card__button_delete" type="submit"></button>)
+            {
+                window.location.pathname === '/movies' && 
+                (<>
+                    <a className="movies-card__link" href={`${movie.trailerLink}`} target="_blank" rel="noopener noreferrer">
+                        <img className="movies-card__image" src={`https://api.nomoreparties.co${movie.image.url}`} alt="Фильм"></img>
+                    </a>
+                    {
+                        isAdded ? (<button className="movies-card__button movies-card__button_added" type="submit"></button>):
+                        (<button onClick={handleSaving} className="movies-card__button movies-card__button_save" type="submit">Сохранить</button>)
+                    }
+                </>)
+            }
+            {
+                window.location.pathname === '/saved-movies' &&
+                (<>
+                    <img className="movies-card__image" src={movie.image} alt="Фильм"></img>
+                    <button className="movies-card__button movies-card__button_delete" type="submit"></button>
+                </>)
             }
             <div className="movies-card__wrapper">
                 <p className="movies-card__name">{movie.nameRU}</p>

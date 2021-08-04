@@ -24,6 +24,53 @@ class MainApi {
         }).then(this._checkResponse);
     }
 
+    saveMovie(
+        {
+            country,
+            director,
+            duration,
+            year,
+            description,
+            image,
+            trailer,
+            nameRU,
+            nameEN,
+            thumbnail,
+            movieId,
+        },
+        jwt
+    ) {
+        return fetch(`${this._baseUrl}/movies`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${jwt}`,
+            },
+            body: JSON.stringify({
+                country,
+                director,
+                duration,
+                year,
+                description,
+                image,
+                trailer,
+                nameRU,
+                nameEN,
+                thumbnail,
+                movieId,
+            }),
+        }).then(this._checkResponse);
+    }
+
+    getSavedMovies(jwt) {
+        return fetch(`${this._baseUrl}/movies`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${jwt}`,
+            },
+        }).then(this._checkResponse);
+    }
+
     _checkResponse(res) {
         if (res.ok) {
             return res.json();

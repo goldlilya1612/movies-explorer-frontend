@@ -6,19 +6,26 @@ import "./Movies.css";
 import { useState, useEffect } from "react";
 import Preloader from "../Preloader/Preloader";
 import { moviesApi } from "../../utils/MoviesApi";
+import {mainApi} from '../../utils/MainApi';
 
-function Movies({setIsPopupOpen, setErrorMessage }) {
+function Movies() {
 
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
     const [isMoviesVisible, setIsMoviesVisible] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
     const [foundMovies, setFoundMovies] = useState([]);
     const [shortMovies, setShortMovies] = useState([]);
-
+    const [savedMovies, setSavedMovies] = useState([]);
     const [filterError, setFilterError] = useState(false);
 
+    const path = window.location.pathname;
     const foundMoviesList = localStorage.foundMovies;
+    const loggedIn = localStorage.getItem('loggedIn');
 
+
+    console.log(savedMovies);
+
+    //TODO: убрать условие
     useEffect(() => {
         if (localStorage.getItem('foundMovies')) {
             setIsPreloaderVisible(false);
@@ -26,6 +33,14 @@ function Movies({setIsPopupOpen, setErrorMessage }) {
             setIsMoviesVisible(true);
         }    
     }, [foundMoviesList, shortMovies])
+
+    useEffect(() => {
+        mainApi.getSavedMovies(localStorage.getItem('token'))
+            .then((movies) => {
+                setSavedMovies(movies);
+                setIsMoviesVisible(true);
+            });
+    }, [path]) 
 
     //некоторые фильмы могут не иметь постера, русского названия и т.д. подумай над этим в данной функции
     const handleSearch = (data) => {
@@ -87,6 +102,43 @@ function Movies({setIsPopupOpen, setErrorMessage }) {
         setIsPreloaderVisible(false)
     }
 
+
+    const handleSaving = (movie) => {
+
+        const thumbnail = `https://api.nomoreparties.co${movie.image.formats.thumbnail.url}`;
+        const movieId = movie.id;
+        const trailer = movie.trailerLink;
+        const image = `https://api.nomoreparties.co${movie.image.url}`
+        const {
+            country,
+            director,
+            duration,
+            year,
+            description,
+            nameRU,
+            nameEN,
+        } = movie;
+
+        //const isCardSaved = 
+
+        mainApi.saveMovie({   
+            country,
+            director,
+            duration,
+            year,
+            description,
+            image,
+            trailer,
+            nameRU,
+            nameEN,
+            thumbnail,
+            movieId,
+        }, localStorage.getItem('token'))
+        .then(() => {
+            console.log('save');
+        })
+        .catch((err) => console.log(`Ошибка: ${err}`)) 
+    }
     /*
     const loadMore = () => {
         console.log('click');
@@ -96,16 +148,37 @@ function Movies({setIsPopupOpen, setErrorMessage }) {
         <> 
             <Preloader isPreloaderVisible={isPreloaderVisible}/>
             <Header />
-            <section className="movies">
+            {
+                path === '/saved-movies' && 
+                (<section className="saved-movies">
+                    <SearchForm onSearch={handleSearch} onCheckboxClick={handleCheckboxClick}/>
+                    <MoviesCardList 
+                        list={savedMovies}
+                        isMoviesVisible={isMoviesVisible}
+                    />
+                </section>)
+            }
+            {
+                path === '/movies' &&
+                (<section className="movies">
                 <SearchForm onSearch={handleSearch} onCheckboxClick={handleCheckboxClick}/>
-                {
-                    filterError ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) :
-                        isChecked ? (<MoviesCardList list={shortMovies} isMoviesVisible={isMoviesVisible}/>) : 
-                            foundMovies.length === 0 ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) : 
-                                (<MoviesCardList list={foundMovies} isMoviesVisible={isMoviesVisible}/>)
-                }
-                {/*<button onClick={loadMore} className="movies__button">Еще</button> */}
-            </section>
+                    {
+                        filterError ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) :
+                            isChecked ? (<MoviesCardList 
+                                            onSave={handleSaving} 
+                                            list={shortMovies}
+                                            isMoviesVisible={isMoviesVisible}
+                                        />) : 
+                                            foundMovies.length === 0 ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) : 
+                                            (<MoviesCardList 
+                                                onSave={handleSaving} 
+                                                list={foundMovies} 
+                                                isMoviesVisible={isMoviesVisible}
+                                            />)
+                    }
+                    {/*<button onClick={loadMore} className="movies__button">Еще</button> */}
+                </section>)
+            }
             <Footer />
         </>
         

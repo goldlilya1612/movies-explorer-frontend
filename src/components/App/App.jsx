@@ -121,9 +121,6 @@ function App() {
 
     const handleLogout = () => {
         localStorage.clear();
-        /*
-        localStorage.removeItem('token');
-        localStorage.removeItem('loggedIn'); */
         history.push('/signin');
     }
 
@@ -134,13 +131,11 @@ function App() {
                     <ProtectedRoute 
                         path="/movies"
                         component={Movies}
-                        setIsPopupOpen={setIsPopupOpen}
-                        setErrorMessage={setErrorMessage}
                         >
                     </ProtectedRoute>
                     <ProtectedRoute 
                         path="/saved-movies"
-                        component={SavedMovies}>
+                        component={Movies}>
                     </ProtectedRoute>
                     <ProtectedRoute 
                         path='/profile'
