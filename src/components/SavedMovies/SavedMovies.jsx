@@ -49,11 +49,8 @@ function SavedMovies() {
             })
             setShortMovies(shortFiltredMovies);
         }
-        localStorage.setItem('savedMovies', JSON.stringify(filtredMovies));
         setSavedMovies(filtredMovies);
     }
-
-    console.log(filterError);
 
     const handleCheckboxClick = (isChecked) => {
         setFilterError(false);
@@ -77,6 +74,15 @@ function SavedMovies() {
         setIsPreloaderVisible(false);
     }
 
+    const handleDelete = (movie) => {
+        console.log(movie);
+        mainApi.deleteMovie(movie._id, localStorage.getItem('token'))
+            .then(() => {
+                setSavedMovies((state) => state.filter((savedMovie) => savedMovie._id !== movie._id))
+            })
+            .catch((err) => console.log(`Ошибка: ${err}`))
+    }
+
     const filterMovies = (movies, keyword) => {
         const filtredMovies = movies.filter(movie => {
             if (movie.nameEN === null) {
@@ -95,8 +101,8 @@ function SavedMovies() {
             <section className="saved-movies">
                 <SearchForm onSearch={handleSearch} onCheckboxClick={handleCheckboxClick}/>
                 {filterError ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) :
-                    isChecked ? (<MoviesCardList list={shortMovies} isMoviesVisible={isMoviesVisible}/>) : 
-                        (<MoviesCardList list={savedMovies} isMoviesVisible={isMoviesVisible}/>)
+                    isChecked ? (<MoviesCardList onDelete={handleDelete} list={shortMovies} isMoviesVisible={isMoviesVisible}/>) : 
+                        (<MoviesCardList onDelete={handleDelete} list={savedMovies} isMoviesVisible={isMoviesVisible}/>)
                 }
             </section>
             <Footer />

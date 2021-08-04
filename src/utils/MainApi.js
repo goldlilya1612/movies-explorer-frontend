@@ -71,6 +71,16 @@ class MainApi {
         }).then(this._checkResponse);
     }
 
+    deleteMovie(id, jwt) {
+        return fetch(`${this._baseUrl}/movies/${id} `, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${jwt}`,
+            },
+        }).then(this._checkResponse);
+    }
+
     _checkResponse(res) {
         if (res.ok) {
             return res.json();

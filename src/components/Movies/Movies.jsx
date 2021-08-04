@@ -8,13 +8,14 @@ import Preloader from "../Preloader/Preloader";
 import { moviesApi } from "../../utils/MoviesApi";
 import {mainApi} from '../../utils/MainApi';
 
-function Movies() {
+function Movies({savedMovies}) {
 
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
     const [foundMovies, setFoundMovies] = useState([]);
     const [shortMovies, setShortMovies] = useState([]);
     const [filterError, setFilterError] = useState(false);
+    const [isCardSaved, setIsCardSaved] = useState(false);
 
     const path = window.location.pathname;
     const foundMoviesList = localStorage.foundMovies;
@@ -92,7 +93,6 @@ function Movies() {
     }
 
     const handleSaving = (movie) => {
-
         const thumbnail = `https://api.nomoreparties.co${movie.image.formats.thumbnail.url}`;
         const movieId = movie.id;
         const trailer = movie.trailerLink;
@@ -106,8 +106,6 @@ function Movies() {
             nameRU,
             nameEN,
         } = movie;
-
-        //const isCardSaved = 
 
         mainApi.saveMovie({   
             country,
@@ -123,7 +121,7 @@ function Movies() {
             movieId,
         }, localStorage.getItem('token'))
         .then(() => {
-            console.log('save');
+            console.log('saving');
         })
         .catch((err) => console.log(`Ошибка: ${err}`)) 
     }
@@ -137,12 +135,16 @@ function Movies() {
                 {
                     filterError ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) :
                         isChecked ? (<MoviesCardList 
+                                        isCardSaved={isCardSaved}
                                         onSave={handleSaving} 
+                                        savedMovies={savedMovies}
                                         list={shortMovies}
                                     />) : 
                                         foundMovies.length === 0 ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) : 
                                         (<MoviesCardList 
-                                            onSave={handleSaving} 
+                                            isCardSaved={isCardSaved}
+                                            onSave={handleSaving}
+                                            savedMovies={savedMovies} 
                                             list={foundMovies} 
                                         />)
                 }

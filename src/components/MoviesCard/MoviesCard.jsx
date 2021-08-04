@@ -7,14 +7,21 @@ import "./MoviesCard.css";
 // isNotSavedMoviesPage = true && isAdded = true -- кнопка c галочкой
 
 const isNotSavedMoviesPage = true;
-const isAdded = false;
+ const isSaved = false;
 
-function MoviesCard({movie, onSave}) {
-    //const [isAdded, setIsAdded] = useState(false);
-
+function MoviesCard({movie, onSave, onDelete, savedMovies}) {
     const handleSaving = () => {
         onSave(movie);
     }
+
+    const handleDelete = () => {
+        onDelete(movie);
+    }
+    /*
+    console.log(movie.id);
+    console.log(savedMovies);
+    console.log(savedMovies.some((item) => item.id === movie.movieId))
+    const isSaved = savedMovies.some((item) => item.id === movie.movieId); */
 
     return (
         <div className="movies-card">
@@ -25,7 +32,7 @@ function MoviesCard({movie, onSave}) {
                         <img className="movies-card__image" src={`https://api.nomoreparties.co${movie.image.url}`} alt="Фильм"></img>
                     </a>
                     {
-                        isAdded ? (<button className="movies-card__button movies-card__button_added" type="submit"></button>):
+                        isSaved ? (<button className="movies-card__button movies-card__button_added" type="submit"></button>):
                         (<button onClick={handleSaving} className="movies-card__button movies-card__button_save" type="submit">Сохранить</button>)
                     }
                 </>)
@@ -34,7 +41,7 @@ function MoviesCard({movie, onSave}) {
                 window.location.pathname === '/saved-movies' &&
                 (<>
                     <img className="movies-card__image" src={movie.image} alt="Фильм"></img>
-                    <button className="movies-card__button movies-card__button_delete" type="submit"></button>
+                    <button className="movies-card__button movies-card__button_delete" type="submit" onClick={handleDelete}></button>
                 </>)
             }
             <div className="movies-card__wrapper">
