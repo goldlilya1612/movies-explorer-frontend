@@ -13,7 +13,6 @@ function SavedMovies() {
     const [shortMovies, setShortMovies] = useState([]);
     const [isChecked, setIsChecked] = useState(false);
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
-    const [isMoviesVisible, setIsMoviesVisible] = useState(false);
     const [filterError, setFilterError] = useState(false);
 
     useEffect(() => {
@@ -25,7 +24,6 @@ function SavedMovies() {
             })
             .finally(() => {
                 setIsPreloaderVisible(false)
-                setIsMoviesVisible(true);
             })  
     }, [])
 
@@ -33,12 +31,12 @@ function SavedMovies() {
         const keyword = data.film;
         setIsPreloaderVisible(true);
         handleFilter(keyword);
+        setIsPreloaderVisible(false);
     }
 
     //поиск по ключевому слову
     const handleFilter = (keyword) => {
         const filtredMovies = filterMovies(savedMovies, keyword);
-        setIsPreloaderVisible(false);
         if (!isChecked) {
             // вывести ошибку, если фильмы не прошли фильтр по слову
             if (filtredMovies.length === 0) {
@@ -106,8 +104,8 @@ function SavedMovies() {
             <section className="saved-movies">
                 <SearchForm onSearch={handleSearch} onCheckboxClick={handleCheckboxClick}/>
                 {filterError ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) :
-                    isChecked ? (<MoviesCardList savedMovies={savedMovies} onDelete={handleDelete} list={shortMovies} isMoviesVisible={isMoviesVisible}/>) : 
-                        (<MoviesCardList savedMovies={savedMovies} onDelete={handleDelete} list={savedMovies} isMoviesVisible={isMoviesVisible}/>)
+                    isChecked ? (<MoviesCardList savedMovies={savedMovies} onDelete={handleDelete} list={shortMovies} />) : 
+                        (<MoviesCardList savedMovies={savedMovies} onDelete={handleDelete} list={savedMovies} />)
                 }
             </section>
             <Footer />

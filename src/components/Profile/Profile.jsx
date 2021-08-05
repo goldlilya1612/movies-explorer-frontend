@@ -2,9 +2,10 @@ import "./Profile.css";
 import React, { useState } from "react";
 import {CurrentUserContext} from '../../contexts/currentUserContext';
 import Header from "../Header/Header";
+import Preloader from "../Preloader/Preloader";
 
 
-function Profile({onUpdateUser, onLogout, loggedIn}) {
+function Profile({onUpdateUser, onLogout, loggedIn, isPreloaderVisible}) {
 
     const currentUser = React.useContext(CurrentUserContext);
     const [errors, setErrors] = useState({});
@@ -31,11 +32,12 @@ function Profile({onUpdateUser, onLogout, loggedIn}) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onUpdateUser(data)
+        onUpdateUser(data);
     }
 
     return (
         <> 
+            <Preloader isPreloaderVisible={isPreloaderVisible}/>
             <Header loggedIn={loggedIn}/>
             <section className="profile">
                 <h2 className="profile__title">Привет, {currentUser.name}!</h2>

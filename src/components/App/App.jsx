@@ -25,6 +25,8 @@ function App() {
     const [currentUser, setCurrentUser] = useState({name:'', email:''});
     const loggedIn = localStorage.getItem('loggedIn');
 
+    const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
+
     useEffect(() => {
         //получение данных о пользователе
         if (localStorage.loggedIn === 'true'){
@@ -99,6 +101,10 @@ function App() {
         mainApi.updateUser(data, localStorage.getItem('token'))
             .then((data) => {
                 setCurrentUser(data);
+                setIsPreloaderVisible(true);
+            })
+            .finally(() => {
+                setIsPreloaderVisible(false);
             })
             .catch((err) => {
                 if (err === 'Ошибка 409') {
@@ -141,7 +147,8 @@ function App() {
                         path='/profile'
                         component={Profile} 
                         onUpdateUser={updateUser}
-                        onLogout={handleLogout}>
+                        onLogout={handleLogout}
+                        isPreloaderVisible={isPreloaderVisible}>
                     </ProtectedRoute>
 
                     <Route exact path="/">
