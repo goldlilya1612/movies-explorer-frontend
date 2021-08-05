@@ -1,13 +1,13 @@
 import MoviesCard from "../MoviesCard/MoviesCard";
 import "./MoviesCardList.css";
 
-function MoviesCardList({ list, onSave, onDelete, savedMovies }) {
+function MoviesCardList({ list, onChangeButtonStatus, onDelete, savedMovies }) {
 
     return (
         <section className={`movies-card-list`}>
             {
                 window.location.pathname === '/movies' &&
-                list.map(movie => (<MoviesCard savedMovies={savedMovies} key={movie.id} movie={movie} onSave={onSave}/>))
+                list.map(movie => (<MoviesCard savedMovies={savedMovies} key={movie.id} movie={movie} onChangeButtonStatus={onChangeButtonStatus}/>))
             }
             {
                 window.location.pathname === '/saved-movies' &&

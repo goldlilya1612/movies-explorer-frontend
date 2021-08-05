@@ -24,15 +24,13 @@ function App() {
     const [errorMessage, setErrorMessage] = useState('');
     const [currentUser, setCurrentUser] = useState({name:'', email:''});
     const loggedIn = localStorage.getItem('loggedIn');
-    const [savedMovies, setSavedMovies] = useState([]);
 
     useEffect(() => {
-        //получение данных о пользователе и сохраненных фильмах
+        //получение данных о пользователе
         if (localStorage.loggedIn === 'true'){
-            Promise.all([mainApi.getUserInfo(localStorage.getItem('token')), mainApi.getSavedMovies(localStorage.getItem('token'))])
-                .then(([res, movies]) => {
+            Promise.all([mainApi.getUserInfo(localStorage.getItem('token'))])
+                .then(([res]) => {
                     setCurrentUser(res);
-                    setSavedMovies(movies)
                 })
                 .catch(err => console.log(err));
         }
@@ -133,8 +131,7 @@ function App() {
                     <ProtectedRoute 
                         path="/movies" 
                         component={Movies}
-                        savedMovies = {savedMovies}
-                        >
+                    >
                     </ProtectedRoute>
                     <ProtectedRoute 
                         path="/saved-movies"

@@ -1,27 +1,15 @@
-import { useState } from "react";
 import "./MoviesCard.css";
 
+function MoviesCard({movie, onChangeButtonStatus, onDelete, savedMovies}) {
 
-// isNotSavedMoviesPage = false -- кнопка с крестиком;
-// isNotSavedMoviesPage = true && isAdded = false -- кнопка сохранить
-// isNotSavedMoviesPage = true && isAdded = true -- кнопка c галочкой
+    const isSaved = savedMovies.some((item) => item.movieId === movie.id);
 
-const isNotSavedMoviesPage = true;
- const isSaved = false;
-
-function MoviesCard({movie, onSave, onDelete, savedMovies}) {
-    const handleSaving = () => {
-        onSave(movie);
+    const handleChangeButtonStatus = () => {
+        onChangeButtonStatus(movie);
     }
-
     const handleDelete = () => {
         onDelete(movie);
     }
-    /*
-    console.log(movie.id);
-    console.log(savedMovies);
-    console.log(savedMovies.some((item) => item.id === movie.movieId))
-    const isSaved = savedMovies.some((item) => item.id === movie.movieId); */
 
     return (
         <div className="movies-card">
@@ -29,11 +17,11 @@ function MoviesCard({movie, onSave, onDelete, savedMovies}) {
                 window.location.pathname === '/movies' && 
                 (<>
                     <a className="movies-card__link" href={`${movie.trailerLink}`} target="_blank" rel="noopener noreferrer">
-                        <img className="movies-card__image" src={`https://api.nomoreparties.co${movie.image.url}`} alt="Фильм"></img>
+                        <img className="movies-card__image" src={`https://api.nomoreparties.co${movie.image.url}`|| `${movie.image.url}`} alt="Фильм"></img>
                     </a>
                     {
-                        isSaved ? (<button className="movies-card__button movies-card__button_added" type="submit"></button>):
-                        (<button onClick={handleSaving} className="movies-card__button movies-card__button_save" type="submit">Сохранить</button>)
+                        isSaved ? (<button onClick={handleChangeButtonStatus} className="movies-card__button movies-card__button_added" type="submit"></button>):
+                        (<button onClick={handleChangeButtonStatus} className="movies-card__button movies-card__button_save" type="submit">Сохранить</button>)
                     }
                 </>)
             }

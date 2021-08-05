@@ -19,6 +19,7 @@ function SavedMovies() {
     useEffect(() => {
         mainApi.getSavedMovies(localStorage.getItem('token'))
             .then((movies) => {
+                localStorage.setItem('savedMovies', JSON.stringify(movies))
                 setIsPreloaderVisible(true);
                 setSavedMovies(movies);
             })
@@ -75,10 +76,14 @@ function SavedMovies() {
     }
 
     const handleDelete = (movie) => {
-        console.log(movie);
         mainApi.deleteMovie(movie._id, localStorage.getItem('token'))
             .then(() => {
-                setSavedMovies((state) => state.filter((savedMovie) => savedMovie._id !== movie._id))
+                mainApi.getSavedMovies(localStorage.getItem('token'))
+                    .then((movies) => {
+                        console.log(movies);
+                        setSavedMovies(movies);
+                        //localStorage.setItem('savedMovies', JSON.stringify(movies));
+                });
             })
             .catch((err) => console.log(`Ошибка: ${err}`))
     }
@@ -101,8 +106,8 @@ function SavedMovies() {
             <section className="saved-movies">
                 <SearchForm onSearch={handleSearch} onCheckboxClick={handleCheckboxClick}/>
                 {filterError ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) :
-                    isChecked ? (<MoviesCardList onDelete={handleDelete} list={shortMovies} isMoviesVisible={isMoviesVisible}/>) : 
-                        (<MoviesCardList onDelete={handleDelete} list={savedMovies} isMoviesVisible={isMoviesVisible}/>)
+                    isChecked ? (<MoviesCardList savedMovies={savedMovies} onDelete={handleDelete} list={shortMovies} isMoviesVisible={isMoviesVisible}/>) : 
+                        (<MoviesCardList savedMovies={savedMovies} onDelete={handleDelete} list={savedMovies} isMoviesVisible={isMoviesVisible}/>)
                 }
             </section>
             <Footer />

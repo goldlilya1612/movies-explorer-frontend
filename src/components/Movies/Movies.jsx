@@ -8,14 +8,15 @@ import Preloader from "../Preloader/Preloader";
 import { moviesApi } from "../../utils/MoviesApi";
 import {mainApi} from '../../utils/MainApi';
 
-function Movies({savedMovies}) {
+function Movies() {
 
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
     const [foundMovies, setFoundMovies] = useState([]);
     const [shortMovies, setShortMovies] = useState([]);
     const [filterError, setFilterError] = useState(false);
-    const [isCardSaved, setIsCardSaved] = useState(false);
+
+    const [savedMovies, setSavedMovies] = useState([]);
 
     const path = window.location.pathname;
     const foundMoviesList = localStorage.foundMovies;
@@ -25,8 +26,17 @@ function Movies({savedMovies}) {
         if (localStorage.getItem('foundMovies')) {
             setIsPreloaderVisible(false);
             setFoundMovies(JSON.parse(foundMoviesList));
-        }    
+        }   
     }, [foundMoviesList])
+
+    useEffect(() => {
+        //получение данных о пользователе и сохраненных фильмах
+        Promise.all([mainApi.getSavedMovies(localStorage.getItem('token'))])
+            .then(([movies]) => {
+                setSavedMovies(movies);
+            })
+            .catch(err => console.log(err));
+    }, []);
 
     //некоторые фильмы могут не иметь постера, русского названия и т.д. подумай над этим в данной функции
     const handleSearch = (data) => {
@@ -35,6 +45,8 @@ function Movies({savedMovies}) {
 
         handleFilter(keyword);
     }
+
+    console.log(savedMovies);
 
     const filterMovies = (movies, keyword) => {
         const filtredMovies = movies.filter(movie => {
@@ -92,38 +104,58 @@ function Movies({savedMovies}) {
         setIsPreloaderVisible(false);
     }
 
-    const handleSaving = (movie) => {
-        const thumbnail = `https://api.nomoreparties.co${movie.image.formats.thumbnail.url}`;
-        const movieId = movie.id;
-        const trailer = movie.trailerLink;
-        const image = `https://api.nomoreparties.co${movie.image.url}`
-        const {
-            country,
-            director,
-            duration,
-            year,
-            description,
-            nameRU,
-            nameEN,
-        } = movie;
+    const handlechangeMovieButtonStatus = (movie) => {
+        const isSaved = savedMovies.some(item => item.movieId === movie.id);
+        if (isSaved) {
+            const savedMovie = savedMovies.find(item => item.movieId === movie.id);
+            mainApi.deleteMovie(savedMovie._id, localStorage.getItem('token'))
+                .then(() => {
+                    mainApi.getSavedMovies(localStorage.getItem('token'))
+                    .then((movies) => {
+                        console.log(movies);
+                        setSavedMovies(movies);
+                    });
+                })  
+                .catch((err) => console.log(`Ошибка: ${err}`))
 
-        mainApi.saveMovie({   
-            country,
-            director,
-            duration,
-            year,
-            description,
-            image,
-            trailer,
-            nameRU,
-            nameEN,
-            thumbnail,
-            movieId,
-        }, localStorage.getItem('token'))
-        .then(() => {
-            console.log('saving');
-        })
-        .catch((err) => console.log(`Ошибка: ${err}`)) 
+        } else {
+            const thumbnail = `https://api.nomoreparties.co${movie.image.formats.thumbnail.url}`;
+            const movieId = movie.id;
+            const trailer = movie.trailerLink;
+            const image = `https://api.nomoreparties.co${movie.image.url}`
+            const {
+                country,
+                director,
+                duration,
+                year,
+                description,
+                nameRU,
+                nameEN,
+            } = movie;
+
+            mainApi.saveMovie({   
+                country,
+                director,
+                duration,
+                year,
+                description,
+                image,
+                trailer,
+                nameRU,
+                nameEN,
+                thumbnail,
+                movieId,
+            }, localStorage.getItem('token'))
+            .then(() => {
+                mainApi.getSavedMovies(localStorage.getItem('token'))
+                    .then((movies) => {
+                        console.log(movies);
+                        setSavedMovies(movies);
+                        localStorage.setItem('savedMovies', JSON.stringify(movies));
+                });
+            })
+            .catch((err) => console.log(`Ошибка: ${err}`))
+        }
     }
 
     return (
@@ -135,15 +167,13 @@ function Movies({savedMovies}) {
                 {
                     filterError ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) :
                         isChecked ? (<MoviesCardList 
-                                        isCardSaved={isCardSaved}
-                                        onSave={handleSaving} 
+                                        onChangeButtonStatus={handlechangeMovieButtonStatus}
                                         savedMovies={savedMovies}
                                         list={shortMovies}
                                     />) : 
                                         foundMovies.length === 0 ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) : 
                                         (<MoviesCardList 
-                                            isCardSaved={isCardSaved}
-                                            onSave={handleSaving}
+                                            onChangeButtonStatus={handlechangeMovieButtonStatus}
                                             savedMovies={savedMovies} 
                                             list={foundMovies} 
                                         />)
