@@ -1,4 +1,5 @@
-const windowWidth = document.body.clientWidth;
+const windowWidth = window.screen.width;
+
 const MOBILE = windowWidth >= 320 && windowWidth <= 480;
 const TABLET = windowWidth > 480 && windowWidth < 1280;
 const COMPUTER = windowWidth >= 1280;

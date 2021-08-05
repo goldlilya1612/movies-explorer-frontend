@@ -10,7 +10,7 @@ function MoviesCardList(
      cardsMobileNumber, 
      cardsComputerNumber, 
      cardsTabletNumber
-    }) {
+     }) {
 
     return (
         <section className={`movies-card-list`}>

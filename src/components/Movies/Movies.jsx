@@ -31,9 +31,12 @@ function Movies() {
             setFoundMovies(JSON.parse(foundMoviesList));
         }
     }, [foundMoviesList])
-
+   
+    
     useEffect(() => {
-        handleButtonVisibility();
+        if (localStorage.getItem('foundMovies')) {
+            handleButtonVisibility();
+        }
     })
 
     const handleButtonVisibility = () => {
