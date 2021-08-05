@@ -30,6 +30,10 @@
     transition: opacity ease 0.5s;
 }
 
+.movies__button_invisible {
+    display: none;
+}
+
 .movies__button:hover {
     cursor: pointer;
     opacity: 0.8;

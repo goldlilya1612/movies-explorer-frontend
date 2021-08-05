@@ -11,23 +11,52 @@ import {mainApi} from '../../utils/MainApi';
 function Movies() {
 
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
+    const [filterError, setFilterError] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
+    const [isButtonVisible, setIsButtonVisible] = useState(false);
     const [foundMovies, setFoundMovies] = useState([]);
     const [shortMovies, setShortMovies] = useState([]);
-    const [filterError, setFilterError] = useState(false);
-
     const [savedMovies, setSavedMovies] = useState([]);
+    const [cardsMobileNumber, setCardsMobileNumber] = useState(0);
+    const [cardsTabletNumber, setCardsTabletNumber] = useState(0);
+    const [cardsComputerNumber, setCardsComputerNumber] = useState(0);
+
+    
 
     const path = window.location.pathname;
     const foundMoviesList = localStorage.foundMovies;
 
-    //TODO: убрать условие
+
+    console.log(cardsMobileNumber + 5);
+    console.log(JSON.parse(localStorage.foundMovies).length);
+
     useEffect(() => {
         if (localStorage.getItem('foundMovies')) {
             setIsPreloaderVisible(false);
             setFoundMovies(JSON.parse(foundMoviesList));
-        }   
+        }
     }, [foundMoviesList])
+
+    useEffect(() => {
+        handleButtonVisibility();
+    })
+
+    const windowWidth = document.body.clientWidth;
+    const MOBILE = windowWidth >= 320 && windowWidth <= 480;
+    const TABLET = windowWidth > 480 && windowWidth < 1280;
+    const COMPUTER = windowWidth >= 1280;
+
+    const handleButtonVisibility = () => {
+        if (
+            ((cardsComputerNumber + 12) < JSON.parse(localStorage.foundMovies).length && COMPUTER) ||
+            ((cardsTabletNumber + 8) < JSON.parse(localStorage.foundMovies).length && TABLET) ||
+            ((cardsMobileNumber + 5) < JSON.parse(localStorage.foundMovies).length && MOBILE)) 
+            {
+                setIsButtonVisible(true);
+        } else {
+            setIsButtonVisible(false);
+        }
+    }
 
     useEffect(() => {
         //получение данных о пользователе и сохраненных фильмах
@@ -42,11 +71,8 @@ function Movies() {
     const handleSearch = (data) => {
         const keyword = data.film;
         setIsPreloaderVisible(true);
-
         handleFilter(keyword);
     }
-
-    console.log(savedMovies);
 
     const filterMovies = (movies, keyword) => {
         const filtredMovies = movies.filter(movie => {
@@ -112,7 +138,6 @@ function Movies() {
                 .then(() => {
                     mainApi.getSavedMovies(localStorage.getItem('token'))
                     .then((movies) => {
-                        console.log(movies);
                         setSavedMovies(movies);
                     });
                 })  
@@ -149,13 +174,22 @@ function Movies() {
             .then(() => {
                 mainApi.getSavedMovies(localStorage.getItem('token'))
                     .then((movies) => {
-                        console.log(movies);
                         setSavedMovies(movies);
                         localStorage.setItem('savedMovies', JSON.stringify(movies));
                 });
             })
             .catch((err) => console.log(`Ошибка: ${err}`))
         }
+    }
+
+    const loadMore = () => {
+        if (MOBILE) {
+            setCardsMobileNumber(state => state + 2);
+        } else if (TABLET) {
+            setCardsTabletNumber(state => state + 2);
+        } else if (COMPUTER) {
+            setCardsComputerNumber(state => state + 5);
+        } 
     }
 
     return (
@@ -170,15 +204,20 @@ function Movies() {
                                         onChangeButtonStatus={handlechangeMovieButtonStatus}
                                         savedMovies={savedMovies}
                                         list={shortMovies}
+                                        cardsMobileNumber={cardsMobileNumber}
+                                        cardsComputerNumber={cardsComputerNumber}
                                     />) : 
                                         foundMovies.length === 0 ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) : 
                                         (<MoviesCardList 
                                             onChangeButtonStatus={handlechangeMovieButtonStatus}
                                             savedMovies={savedMovies} 
                                             list={foundMovies} 
+                                            cardsMobileNumber={cardsMobileNumber}
+                                            cardsTabletNumber={cardsTabletNumber}
+                                            cardsComputerNumber={cardsComputerNumber}
                                         />)
                 }
-                {/*<button onClick={loadMore} className="movies__button">Еще</button> */}
+                <button onClick={loadMore} className={`movies__button ${isButtonVisible ? '' : 'movies__button_invisible'}`}>Еще</button>
             </section>
             <Footer />
         </> 

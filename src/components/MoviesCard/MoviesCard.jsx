@@ -20,7 +20,9 @@ function MoviesCard({movie, onChangeButtonStatus, onDelete, savedMovies}) {
                         <img className="movies-card__image" src={`https://api.nomoreparties.co${movie.image.url}`|| `${movie.image.url}`} alt="Фильм"></img>
                     </a>
                     {
-                        isSaved ? (<button onClick={handleChangeButtonStatus} className="movies-card__button movies-card__button_added" type="submit"></button>):
+                        isSaved ? 
+                        (<button onClick={handleChangeButtonStatus} className="movies-card__button movies-card__button_added" type="submit"></button>)
+                        :
                         (<button onClick={handleChangeButtonStatus} className="movies-card__button movies-card__button_save" type="submit">Сохранить</button>)
                     }
                 </>)
