@@ -1,14 +1,16 @@
-import { useState } from "react";
 import MoviesCard from "../MoviesCard/MoviesCard";
 import "./MoviesCardList.css";
+import { MOBILE, TABLET, COMPUTER } from '../../utils/constants'
 
-function MoviesCardList({ list, onChangeButtonStatus, onDelete, savedMovies, cardsMobileNumber, cardsComputerNumber, cardsTabletNumber }) {
-
-    const windowWidth = document.body.clientWidth;
-
-    const MOBILE = windowWidth >= 320 && windowWidth <= 480;
-    const TABLET = windowWidth > 480 && windowWidth < 1280;
-    const COMPUTER = windowWidth >= 1280;
+function MoviesCardList(
+    {list,
+     onChangeButtonStatus, 
+     onDelete, 
+     savedMovies,
+     cardsMobileNumber, 
+     cardsComputerNumber, 
+     cardsTabletNumber
+    }) {
 
     return (
         <section className={`movies-card-list`}>

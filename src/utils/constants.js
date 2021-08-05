@@ -1,3 +1,8 @@
+const windowWidth = document.body.clientWidth;
+const MOBILE = windowWidth >= 320 && windowWidth <= 480;
+const TABLET = windowWidth > 480 && windowWidth < 1280;
+const COMPUTER = windowWidth >= 1280;
+
 const REGISTER = {
     button: "Зарегистрироваться",
     text: "Уже зарегистрированы?",
@@ -12,4 +17,4 @@ const LOGIN = {
     path: "/signup",
 };
 
-export { LOGIN, REGISTER };
+export { LOGIN, REGISTER, MOBILE, TABLET, COMPUTER };

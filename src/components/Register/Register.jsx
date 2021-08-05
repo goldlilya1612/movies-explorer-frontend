@@ -1,6 +1,6 @@
 import ButtonBlock from "../ButtonBlock/ButtonBlock";
 import Logo from "../Logo/Logo";
-import { REGISTER }from '../../utils/constants';
+import { REGISTER } from '../../utils/constants';
 import React, { useCallback, useState } from "react";
 import "./Register.css";
 

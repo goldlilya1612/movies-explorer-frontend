@@ -6,7 +6,8 @@ import "./Movies.css";
 import { useState, useEffect } from "react";
 import Preloader from "../Preloader/Preloader";
 import { moviesApi } from "../../utils/MoviesApi";
-import {mainApi} from '../../utils/MainApi';
+import { mainApi } from '../../utils/MainApi';
+import { MOBILE, TABLET, COMPUTER } from '../../utils/constants';
 
 function Movies() {
 
@@ -21,14 +22,8 @@ function Movies() {
     const [cardsTabletNumber, setCardsTabletNumber] = useState(0);
     const [cardsComputerNumber, setCardsComputerNumber] = useState(0);
 
-    
-
     const path = window.location.pathname;
     const foundMoviesList = localStorage.foundMovies;
-
-
-    console.log(cardsMobileNumber + 5);
-    console.log(JSON.parse(localStorage.foundMovies).length);
 
     useEffect(() => {
         if (localStorage.getItem('foundMovies')) {
@@ -40,11 +35,6 @@ function Movies() {
     useEffect(() => {
         handleButtonVisibility();
     })
-
-    const windowWidth = document.body.clientWidth;
-    const MOBILE = windowWidth >= 320 && windowWidth <= 480;
-    const TABLET = windowWidth > 480 && windowWidth < 1280;
-    const COMPUTER = windowWidth >= 1280;
 
     const handleButtonVisibility = () => {
         if (

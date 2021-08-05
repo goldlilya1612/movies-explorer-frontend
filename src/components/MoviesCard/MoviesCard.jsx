@@ -3,6 +3,8 @@ import "./MoviesCard.css";
 function MoviesCard({movie, onChangeButtonStatus, onDelete, savedMovies}) {
 
     const isSaved = savedMovies.some((item) => item.movieId === movie.id);
+    const hour = Math.floor(movie.duration / 60);
+    const minutes = Math.floor(movie.duration % 60);
 
     const handleChangeButtonStatus = () => {
         onChangeButtonStatus(movie);
@@ -36,7 +38,7 @@ function MoviesCard({movie, onChangeButtonStatus, onDelete, savedMovies}) {
             }
             <div className="movies-card__wrapper">
                 <p className="movies-card__name">{movie.nameRU}</p>
-                <p className="movies-card__duration">{movie.duration}мин</p>
+                <p className="movies-card__duration">{hour}ч {minutes}м</p>
             </div>
         </div>
     );

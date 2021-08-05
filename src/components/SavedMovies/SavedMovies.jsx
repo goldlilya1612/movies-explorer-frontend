@@ -27,6 +27,7 @@ function SavedMovies() {
             })  
     }, [])
 
+    //поиск
     const handleSearch = (data) => {
         const keyword = data.film;
         setIsPreloaderVisible(true);
@@ -51,6 +52,7 @@ function SavedMovies() {
         setSavedMovies(filtredMovies);
     }
 
+    //клик по переключателю
     const handleCheckboxClick = (isChecked) => {
         setFilterError(false);
         setIsPreloaderVisible(true);
@@ -90,7 +92,6 @@ function SavedMovies() {
         const filtredMovies = movies.filter(movie => {
             if (movie.nameEN === null) {
                 movie.nameEN = movie.nameRU;
-                
             }
             return movie.nameRU.toLowerCase().includes(keyword.toLowerCase()) || movie.nameEN.toLowerCase().includes(keyword.toLowerCase())
         });
