@@ -22,34 +22,14 @@ function Movies() {
     const [cardsTabletNumber, setCardsTabletNumber] = useState(0);
     const [cardsComputerNumber, setCardsComputerNumber] = useState(0);
 
-    const path = window.location.pathname;
-    const foundMoviesList = localStorage.foundMovies;
 
     useEffect(() => {
-        if (localStorage.getItem('foundMovies')) {
+        if (shortMovies.length !== 0 && foundMovies.length !== 0) {
             setIsPreloaderVisible(false);
-            setFoundMovies(JSON.parse(foundMoviesList));
+            setFoundMovies(JSON.parse(localStorage.foundMovies));
+            setFilterError(false);
         }
-    }, [foundMoviesList])
-   
-    
-    useEffect(() => {
-        if (localStorage.getItem('foundMovies')) {
-            handleButtonVisibility();
-        }
-    })
-
-    const handleButtonVisibility = () => {
-        if (
-            ((cardsComputerNumber + 12) < JSON.parse(localStorage.foundMovies).length && COMPUTER) ||
-            ((cardsTabletNumber + 8) < JSON.parse(localStorage.foundMovies).length && TABLET) ||
-            ((cardsMobileNumber + 5) < JSON.parse(localStorage.foundMovies).length && MOBILE)) 
-            {
-                setIsButtonVisible(true);
-        } else {
-            setIsButtonVisible(false);
-        }
-    }
+    }, [isChecked])
 
     useEffect(() => {
         //получение данных о пользователе и сохраненных фильмах
@@ -59,8 +39,34 @@ function Movies() {
             })
             .catch(err => console.log(err));
     }, []);
+   
+    
+    useEffect(() => {
+        if (localStorage.getItem('shortMovies') || localStorage.getItem('foundMovies')) {
+            handleButtonVisibility();
+        }   
+    })
 
-    //некоторые фильмы могут не иметь постера, русского названия и т.д. подумай над этим в данной функции
+    const handleButtonVisibility = () => {
+        if (isChecked){
+            setButtonVisibility(shortMovies.length)
+        } else {
+            setButtonVisibility(foundMovies.length)
+        }
+    }
+
+    const setButtonVisibility = (arrayLength) => {
+        if (
+            ((cardsComputerNumber + 12) < arrayLength && COMPUTER) ||
+            ((cardsTabletNumber + 8) < arrayLength && TABLET) ||
+            ((cardsMobileNumber + 5) < arrayLength && MOBILE))
+            {
+                setIsButtonVisible(true);
+        } else {
+            setIsButtonVisible(false);
+        }
+    }
+
     const handleSearch = (data) => {
         const keyword = data.film;
         setIsPreloaderVisible(true);
@@ -78,49 +84,68 @@ function Movies() {
         return filtredMovies
     }
     
+    
     //поиск по ключевому слову
     const handleFilter = (keyword) => {
-        if (path === '/movies') {
-            moviesApi.getMovies()
+        setFilterError(false);
+        moviesApi.getMovies()
             .then((movies) => {
                 const filtredMovies = filterMovies(movies, keyword);
+                localStorage.setItem('foundMovies', JSON.stringify(filtredMovies));
+                setFoundMovies(filtredMovies);
+
                 if (!isChecked) {
-                    // спрятать прелоудер, если найденные фильмы совпадают с найденными ранее на одну итерацию фильмами 
-                    if (JSON.stringify(filtredMovies) === localStorage.foundMovies) {
-                        setIsPreloaderVisible(false);
-                    // вывести ошибку, если фильмы не прошли фильтр по слову
-                    } else if (filtredMovies.length === 0) {
-                        setFilterError(true);
+                    if (filtredMovies.length === 0) {
+                        handleUnsuccessfulFilter('foundMovies');
                     } 
                 } else {
                     const shortFiltredMovies = filtredMovies.filter(movie => {
                         return movie.duration < 40;
                     })
-                    setShortMovies(shortFiltredMovies);
+                    if (shortFiltredMovies.length === 0) {
+                        handleUnsuccessfulFilter('shortMovies');
+                    } else {
+                        setShortMovies(shortFiltredMovies);
+                        localStorage.setItem('shortMovies', JSON.stringify(shortFiltredMovies)); 
+                    }
                 }
-                localStorage.setItem('foundMovies', JSON.stringify(filtredMovies));
-                setFoundMovies(filtredMovies);
+                setIsPreloaderVisible(false);
             })
-        }
     }
 
     //клик по переключателю
     const handleCheckboxClick = (isChecked) => {
         setFilterError(false);
         setIsPreloaderVisible(true);
+        setCardsComputerNumber(0);
+        setCardsMobileNumber(0);
+        setCardsTabletNumber(0);
         if (isChecked) {
             const shortMoviesList = foundMovies.filter((movie) => {
                 return movie.duration < 40;
             });
             //если нет короткометражек
             if (shortMoviesList.length === 0) {
-                setFilterError(true);
+                handleUnsuccessfulFilter('shortMovies');
             } else {
                 setShortMovies(shortMoviesList);
+                localStorage.setItem('shortMovies', JSON.stringify(shortMoviesList));
             }
+        } else {
+            if (JSON.parse(localStorage.foundMovies).length === 0) {
+                handleUnsuccessfulFilter('foundMovies');
+            }
+            setShortMovies([]);
+            localStorage.setItem('shortMovies', JSON.stringify([]));
+            setFoundMovies(JSON.parse(localStorage.foundMovies));
         }
         setIsChecked(isChecked);
         setIsPreloaderVisible(false);
+    }
+
+    const handleUnsuccessfulFilter = (array) => {
+        setFilterError(true);
+        localStorage.setItem(array, JSON.stringify([]));
     }
 
     const handlechangeMovieButtonStatus = (movie) => {

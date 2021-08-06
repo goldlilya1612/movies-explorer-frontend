@@ -91,5 +91,5 @@ class MainApi {
 
 export const mainApi = new MainApi({
     baseUrl: "http://localhost:3005",
-    //baseUrl: "https://mesto.lilya.nomoredomains.club",
+    //baseUrl: "https://api.diploma.nomoredomains.work",
 });

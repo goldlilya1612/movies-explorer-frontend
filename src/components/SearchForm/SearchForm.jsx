@@ -1,6 +1,6 @@
 import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 import "./SearchForm.css";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 function SearchForm({onSearch, onCheckboxClick}) {
 
