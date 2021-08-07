@@ -30,6 +30,7 @@ function SearchForm({onSearch, onCheckboxClick}) {
 
     return ( 
             <form onSubmit={handleSubmit} className="search-form">
+                
                 <input onChange={handleChange} placeholder="Фильм" name="film" value={data.film} className="search-form__input" type="search" required></input>
                 <button className="search-form__button" type="submit"></button>
                 <div className="search-form__checkbox-wrapper">

@@ -9,6 +9,7 @@ import Preloader from "../Preloader/Preloader";
 
 function SavedMovies() {
 
+    const [savedFoundMovies, setSavedFoundMovies] = useState([]);
     const [savedMovies, setSavedMovies] = useState([]);
     const [shortMovies, setShortMovies] = useState([]);
     const [isChecked, setIsChecked] = useState(false);
@@ -18,13 +19,16 @@ function SavedMovies() {
     useEffect(() => {
         mainApi.getSavedMovies(localStorage.getItem('token'))
             .then((movies) => {
-                localStorage.setItem('savedMovies', JSON.stringify(movies))
                 setIsPreloaderVisible(true);
                 setSavedMovies(movies);
+
+                if (!localStorage.getItem('savedFoundMovies')) {
+                    setSavedFoundMovies(movies);
+                } 
             })
             .finally(() => {
                 setIsPreloaderVisible(false)
-            })  
+            });
     }, [])
 
     //поиск
@@ -37,6 +41,7 @@ function SavedMovies() {
 
     //поиск по ключевому слову
     const handleFilter = (keyword) => {
+        setFilterError(false);
         const filtredMovies = filterMovies(savedMovies, keyword);
         if (!isChecked) {
             // вывести ошибку, если фильмы не прошли фильтр по слову
@@ -49,7 +54,8 @@ function SavedMovies() {
             })
             setShortMovies(shortFiltredMovies);
         }
-        setSavedMovies(filtredMovies);
+        localStorage.setItem('savedFoundMovies', JSON.stringify(filtredMovies));
+        setSavedFoundMovies(filtredMovies);
     }
 
     //клик по переключателю
@@ -57,7 +63,7 @@ function SavedMovies() {
         setFilterError(false);
         setIsPreloaderVisible(true);
         if (isChecked) {
-            const shortMoviesList = savedMovies.filter((movie) => {
+            const shortMoviesList = savedFoundMovies.filter((movie) => {
                 return movie.duration < 40;
             });
             //если нет короткометражек
@@ -67,7 +73,7 @@ function SavedMovies() {
                 setShortMovies(shortMoviesList);
             }
         } else {
-            if (savedMovies.length === 0) {
+            if (savedFoundMovies.length === 0) {
                 setFilterError(true);
             }
         }
@@ -80,9 +86,7 @@ function SavedMovies() {
             .then(() => {
                 mainApi.getSavedMovies(localStorage.getItem('token'))
                     .then((movies) => {
-                        console.log(movies);
                         setSavedMovies(movies);
-                        //localStorage.setItem('savedMovies', JSON.stringify(movies));
                 });
             })
             .catch((err) => console.log(`Ошибка: ${err}`))
@@ -105,8 +109,10 @@ function SavedMovies() {
             <section className="saved-movies">
                 <SearchForm onSearch={handleSearch} onCheckboxClick={handleCheckboxClick}/>
                 {filterError ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) :
-                    isChecked ? (<MoviesCardList savedMovies={savedMovies} onDelete={handleDelete} list={shortMovies} />) : 
-                        (<MoviesCardList savedMovies={savedMovies} onDelete={handleDelete} list={savedMovies} />)
+                    isChecked ? (<MoviesCardList savedMovies={savedMovies} onDelete={handleDelete} list={shortMovies} />) :
+                        savedFoundMovies.length === 0 ? 
+                            (<MoviesCardList savedMovies={savedMovies} onDelete={handleDelete} list={savedMovies} />) :
+                            (<MoviesCardList savedMovies={savedMovies} onDelete={handleDelete} list={savedFoundMovies} />)
                 }
             </section>
             <Footer />
