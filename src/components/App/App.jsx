@@ -13,7 +13,7 @@ import * as auth from "../../utils/auth";
 import { useEffect, useState } from "react";
 import {CurrentUserContext} from '../../contexts/currentUserContext';
 import {mainApi} from '../../utils/MainApi';
-import ErrPopup from "../ErrPopup/ErrPopup";
+import Popup from "../Popup/Popup";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import Error from "../Error/Error";
 
@@ -21,8 +21,9 @@ function App() {
 
     const history = useHistory(); 
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [message, setMessage] = useState('');
     const [currentUser, setCurrentUser] = useState({name:'', email:''});
+    const [isInputDisabled, setIsInputDisabled] = useState(false);
 
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
 
@@ -40,27 +41,29 @@ function App() {
         setIsPopupOpen(false);
     }
 
-    const handleRegister = (data) => {
+    const handleRegister = (data, setData, setIsValid, setErrors, resetForm) => {
         const { email, password, name } = data;
         return auth.register({ email, password, name })
             .then(() => {
-                handleLogin({ email, password })
+                handleLogin({ email, password }, setData, setIsValid, setErrors, resetForm);
             })
             .catch((err) => {
                 if (err === 'Ошибка: 409') {
-                    setErrorMessage('Пользователь с таким email уже зарегистрирован');
+                    setMessage('Пользователь с таким email уже зарегистрирован');
                     setIsPopupOpen(true);
                 } else if (err === 'Ошибка: 400') {
-                    setErrorMessage('Ошибка валидации');
+                    setMessage('Ошибка валидации');
                     setIsPopupOpen(true);
                 }
             });
     }
 
-    const handleLogin = (data) => {
+    const handleLogin = (data, setData, setIsValid, setErrors, resetForm) => {
         const {email, password} = data;
         return auth.login({email, password})
             .then((data) => {
+                setIsInputDisabled(true);
+                setIsPreloaderVisible(true);
                 if (!data) throw new Error ('При авторизации произошла ошибка. Токен не передан или передан не в том формате.')
                 if (data.token) {
                     localStorage.setItem('token', data.token);
@@ -77,9 +80,14 @@ function App() {
                     history.push('/signin');
                 }
             })
+            .finally(() => {
+                resetForm();
+                setIsInputDisabled(false);
+                setIsPreloaderVisible(false);
+            })
             .catch((err) => {
                 if (err === 'Ошибка: 400') {
-                    setErrorMessage('Вы ввели неправильный логин или пароль.');
+                    setMessage('Вы ввели неправильный логин или пароль.');
                     setIsPopupOpen(true);
                 }
             });
@@ -89,14 +97,18 @@ function App() {
         mainApi.updateUser(data, localStorage.getItem('token'))
             .then((data) => {
                 setCurrentUser(data);
+                setIsInputDisabled(true)
                 setIsPreloaderVisible(true);
             })
             .finally(() => {
+                setIsInputDisabled(false);
                 setIsPreloaderVisible(false);
+                setMessage('Данные сохранены');
+                setIsPopupOpen(true);
             })
             .catch((err) => {
                 if (err === 'Ошибка 409') {
-                    setErrorMessage('Пользователь с таким email уже существует.');
+                    setMessage('Пользователь с таким email уже существует.');
                     setIsPopupOpen(true);
                 }
             })
@@ -140,7 +152,8 @@ function App() {
                         component={Profile} 
                         onUpdateUser={updateUser}
                         onLogout={handleLogout}
-                        isPreloaderVisible={isPreloaderVisible}>
+                        isPreloaderVisible={isPreloaderVisible}
+                        isInputDisabled={isInputDisabled}>
                     </ProtectedRoute>
 
                     <Route exact path="/">
@@ -149,17 +162,17 @@ function App() {
                         <Footer />
                     </Route>
                     <Route path="/signin">
-                        <Login onLogin={handleLogin}/>
+                        <Login isInputDisabled={isInputDisabled} onLogin={handleLogin}/>
                     </Route>
                     <Route path="/signup">
-                        <Register onRegister={handleRegister} />
+                        <Register isInputDisabled={isInputDisabled} onRegister={handleRegister} />
                     </Route>
                     <Route path="*">
                         <Error />
                     </Route>
                 </Switch>
 
-                <ErrPopup isOpen={isPopupOpen} onClose={handlePopupClose} errorMessage={errorMessage}/>
+                <Popup isOpen={isPopupOpen} onClose={handlePopupClose} message={message}/>
             </div>
         </CurrentUserContext.Provider>
     );

@@ -5,7 +5,7 @@ import Header from "../Header/Header";
 import Preloader from "../Preloader/Preloader";
 
 
-function Profile({onUpdateUser, onLogout, loggedIn, isPreloaderVisible}) {
+function Profile({onUpdateUser, onLogout, loggedIn, isPreloaderVisible, isInputDisabled}) {
 
     const currentUser = React.useContext(CurrentUserContext);
     const [errors, setErrors] = useState({});
@@ -43,19 +43,25 @@ function Profile({onUpdateUser, onLogout, loggedIn, isPreloaderVisible}) {
                 <h2 className="profile__title">Привет, {currentUser.name}!</h2>
                 <form onSubmit={handleSubmit} className="profile-form">
                     <label className="profile-form__label profile-form__label_first " htmlFor="profile-name">Имя
-                        <input onChange ={handleChange} type="text" name="name" id="profile-name" className="profile-form__input" value={data.name} minLength="2" maxLength="30"></input>
+                        {isInputDisabled ? 
+                            (<input disabled onChange ={handleChange} type="text" name="name" id="profile-name" className="profile-form__input" value={data.name} minLength="2" maxLength="30"></input>) : 
+                            (<input onChange ={handleChange} type="text" name="name" id="profile-name" className="profile-form__input" value={data.name} minLength="2" maxLength="30"></input>)
+                        }
                     </label>
                     <span className="profile__input-error">{errors.name}</span>
 
                     <label className="profile-form__label" htmlFor="profile-email">E-mail
-                        <input onChange ={handleChange} type="email" name="email" id="profile-email" className="profile-form__input" value={data.email}></input>
+                        {isInputDisabled ? 
+                            (<input disabled onChange ={handleChange} type="email" name="email" id="profile-email" className="profile-form__input" value={data.email}></input>):
+                            (<input onChange ={handleChange} type="email" name="email" id="profile-email" className="profile-form__input" value={data.email}></input>)
+                        }
                     </label>
                     <span className="profile__input-error">{errors.email}</span>
                     
                     <div className="profile__buttons">
                         {isValid ?
                             (<button type="submit" className="profile__button profile__button_update">Редактировать</button>): 
-                            <button type="submit" className="profile__button profile__button_invalid profile__button_update" disabled>Редактировать</button>
+                            (<button type="submit" className="profile__button profile__button_invalid profile__button_update" disabled>Редактировать</button>)
                         }
                         <button onClick={onLogout} type="button" className="profile__button profile__button_get-out">Выйти из аккаунта</button>
                     </div>

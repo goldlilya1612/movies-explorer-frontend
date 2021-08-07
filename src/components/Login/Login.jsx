@@ -5,7 +5,7 @@ import React, { useCallback, useState } from "react";
 import "./Login.css";
 
 
-function Login({onLogin}) {
+function Login({onLogin, isInputDisabled}) {
 
     const [errors, setErrors] = useState({});
     const [isValid, setIsValid] = useState(false);
@@ -24,10 +24,10 @@ function Login({onLogin}) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onLogin(data);
+        onLogin(data, setData, setIsValid, setErrors, resetForm);
 
         //TODO: resetForm in onLogin;
-        resetForm();
+        //resetForm();
     }
 
     const resetForm = useCallback(
@@ -50,11 +50,19 @@ function Login({onLogin}) {
             </div>
             <form onSubmit={handleSubmit} className="section-with-form__form">
                 <label className="section-with-form__label" htmlFor="email-login">E-mail
-                    <input onChange={handleChange} required value={data.email} type="email" name="email" id="email-login" className="section-with-form__input"></input>
+                    {
+                        isInputDisabled ?
+                        (<input disabled onChange={handleChange} required value={data.email} type="email" name="email" id="email-login" className="section-with-form__input"></input>):
+                        (<input onChange={handleChange} required value={data.email} type="email" name="email" id="email-login" className="section-with-form__input"></input>)
+                    }
                     <span className="section-with-form__error">{errors.email}</span>
                 </label>
                 <label className="section-with-form__label" htmlFor="password-login">Пароль
-                    <input onChange={handleChange} required value={data.password} type="password" name="password" id="password-login" className="section-with-form__input" minLength='8'></input>
+                    {
+                        isInputDisabled ?
+                        (<input disabled onChange={handleChange} required value={data.password} type="password" name="password" id="password-login" className="section-with-form__input" minLength='8'></input>):
+                        (<input onChange={handleChange} required value={data.password} type="password" name="password" id="password-login" className="section-with-form__input" minLength='8'></input>)
+                    }
                     <span className="section-with-form__error">{errors.password}</span>
                 </label>
                 <ButtonBlock content = { LOGIN } name='login' isValid={isValid}/>
