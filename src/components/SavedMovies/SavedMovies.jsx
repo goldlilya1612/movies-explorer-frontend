@@ -29,7 +29,7 @@ function SavedMovies() {
             .finally(() => {
                 setIsPreloaderVisible(false)
             });
-    }, [])
+    }, [savedFoundMovies.length])
 
     //поиск
     const handleSearch = (data) => {
@@ -84,10 +84,7 @@ function SavedMovies() {
     const handleDelete = (movie) => {
         mainApi.deleteMovie(movie._id, localStorage.getItem('token'))
             .then(() => {
-                mainApi.getSavedMovies(localStorage.getItem('token'))
-                    .then((movies) => {
-                        setSavedMovies(movies);
-                });
+                setSavedFoundMovies((state) => state.filter((c) => c.movieId !== movie.movieId))
             })
             .catch((err) => console.log(`Ошибка: ${err}`))
     }
