@@ -5,7 +5,7 @@ import React, { useCallback, useState } from "react";
 import "./Login.css";
 
 
-function Login({onLogin, isInputDisabled}) {
+function Login({onLogin, isDisabled}) {
 
     const [errors, setErrors] = useState({});
     const [isValid, setIsValid] = useState(false);
@@ -51,7 +51,7 @@ function Login({onLogin, isInputDisabled}) {
             <form onSubmit={handleSubmit} className="section-with-form__form">
                 <label className="section-with-form__label" htmlFor="email-login">E-mail
                     {
-                        isInputDisabled ?
+                        isDisabled ?
                         (<input disabled onChange={handleChange} required value={data.email} type="email" name="email" id="email-login" className="section-with-form__input"></input>):
                         (<input onChange={handleChange} required value={data.email} type="email" name="email" id="email-login" className="section-with-form__input"></input>)
                     }
@@ -59,13 +59,13 @@ function Login({onLogin, isInputDisabled}) {
                 </label>
                 <label className="section-with-form__label" htmlFor="password-login">Пароль
                     {
-                        isInputDisabled ?
+                        isDisabled ?
                         (<input disabled onChange={handleChange} required value={data.password} type="password" name="password" id="password-login" className="section-with-form__input" minLength='8'></input>):
                         (<input onChange={handleChange} required value={data.password} type="password" name="password" id="password-login" className="section-with-form__input" minLength='8'></input>)
                     }
                     <span className="section-with-form__error">{errors.password}</span>
                 </label>
-                <ButtonBlock content = { LOGIN } name='login' isValid={isValid}/>
+                <ButtonBlock content = { LOGIN } name='login' isValid={isValid} isDisabled={isDisabled}/>
             </form>
         </section>
     );

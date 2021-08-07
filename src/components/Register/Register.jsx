@@ -5,7 +5,7 @@ import React, { useCallback, useState } from "react";
 import "./Register.css";
 
 
-function Register({ onRegister, isInputDisabled }) {
+function Register({ onRegister, isDisabled }) {
     
     const [errors, setErrors] = useState({});
     const [isValid, setIsValid] = useState(false);
@@ -50,7 +50,7 @@ function Register({ onRegister, isInputDisabled }) {
             <form onSubmit={handleSubmit} className="section-with-form__form">
                 <label className="section-with-form__label" htmlFor="name-register">Имя
                     {
-                        isInputDisabled ?
+                        isDisabled ?
                         (<input disabled required onChange={handleChange} value={data.name} type="text" name="name" id="name-register" className="section-with-form__input" minLength='2' maxLength='30'></input>):
                         (<input required onChange={handleChange} value={data.name} type="text" name="name" id="name-register" className="section-with-form__input" minLength='2' maxLength='30'></input>)
                     }
@@ -58,7 +58,7 @@ function Register({ onRegister, isInputDisabled }) {
                 </label>
                 <label className="section-with-form__label" htmlFor="email-register">E-mail
                     {
-                        isInputDisabled ?
+                        isDisabled ?
                         (<input disabled required onChange={handleChange} value={data.email} type="email" name="email" id="email-register" className="section-with-form__input"></input>):
                         (<input required onChange={handleChange} value={data.email} type="email" name="email" id="email-register" className="section-with-form__input"></input>)
                     }
@@ -66,13 +66,13 @@ function Register({ onRegister, isInputDisabled }) {
                 </label>
                 <label className="section-with-form__label" htmlFor="password-register">Пароль
                     {
-                        isInputDisabled ?
+                        isDisabled ?
                         (<input required onChange={handleChange} value={data.password} type="password" name="password" id="password-register" className="section-with-form__input" minLength='8'></input>):
                         (<input required onChange={handleChange} value={data.password} type="password" name="password" id="password-register" className="section-with-form__input" minLength='8'></input>)
                     }
                     <span className="section-with-form__error">{errors.password}</span>
                 </label>
-                <ButtonBlock content = { REGISTER } name='register' isValid={isValid}/>
+                <ButtonBlock content = { REGISTER } name='register' isValid={isValid} isDisabled={isDisabled}/>
             </form>
         </section>
     )

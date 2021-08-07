@@ -23,7 +23,7 @@ function App() {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [message, setMessage] = useState('');
     const [currentUser, setCurrentUser] = useState({name:'', email:''});
-    const [isInputDisabled, setIsInputDisabled] = useState(false);
+    const [isDisabled, setIsDisabled] = useState(false);
 
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
 
@@ -62,7 +62,7 @@ function App() {
         const {email, password} = data;
         return auth.login({email, password})
             .then((data) => {
-                setIsInputDisabled(true);
+                setIsDisabled(true);
                 setIsPreloaderVisible(true);
                 if (!data) throw new Error ('При авторизации произошла ошибка. Токен не передан или передан не в том формате.')
                 if (data.token) {
@@ -82,7 +82,7 @@ function App() {
             })
             .finally(() => {
                 resetForm();
-                setIsInputDisabled(false);
+                setIsDisabled(false);
                 setIsPreloaderVisible(false);
             })
             .catch((err) => {
@@ -97,11 +97,11 @@ function App() {
         mainApi.updateUser(data, localStorage.getItem('token'))
             .then((data) => {
                 setCurrentUser(data);
-                setIsInputDisabled(true)
+                setIsDisabled(true)
                 setIsPreloaderVisible(true);
             })
             .finally(() => {
-                setIsInputDisabled(false);
+                setIsDisabled(false);
                 setIsPreloaderVisible(false);
                 setMessage('Данные сохранены');
                 setIsPopupOpen(true);
@@ -153,7 +153,7 @@ function App() {
                         onUpdateUser={updateUser}
                         onLogout={handleLogout}
                         isPreloaderVisible={isPreloaderVisible}
-                        isInputDisabled={isInputDisabled}>
+                        isDisabled={isDisabled}>
                     </ProtectedRoute>
 
                     <Route exact path="/">
@@ -162,10 +162,10 @@ function App() {
                         <Footer />
                     </Route>
                     <Route path="/signin">
-                        <Login isInputDisabled={isInputDisabled} onLogin={handleLogin}/>
+                        <Login isDisabled={isDisabled} onLogin={handleLogin}/>
                     </Route>
                     <Route path="/signup">
-                        <Register isInputDisabled={isInputDisabled} onRegister={handleRegister} />
+                        <Register isDisabled={isDisabled} onRegister={handleRegister} />
                     </Route>
                     <Route path="*">
                         <Error />
