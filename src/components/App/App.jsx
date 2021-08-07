@@ -110,8 +110,12 @@ function App() {
                 setCurrentUser({name: res.name, email: res.email })
                 localStorage.setItem('loggedIn', true);
             })
-            .catch((err) => { console.log(`Ошибка: ${err}`)})
-    }}
+            .catch((err) => { 
+                console.log(`Ошибка: ${err}`);
+                handleLogout();
+            })
+        }
+    }
 
     const handleLogout = () => {
         localStorage.clear();
