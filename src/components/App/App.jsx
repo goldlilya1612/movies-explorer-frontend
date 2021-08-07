@@ -23,20 +23,8 @@ function App() {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [currentUser, setCurrentUser] = useState({name:'', email:''});
-    const loggedIn = localStorage.getItem('loggedIn');
 
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
-
-    useEffect(() => {
-        //получение данных о пользователе
-        if (localStorage.loggedIn === 'true'){
-            Promise.all([mainApi.getUserInfo(localStorage.getItem('token'))])
-                .then(([res]) => {
-                    setCurrentUser(res);
-                })
-                .catch(err => console.log(err));
-        }
-    }, [loggedIn]);
 
     useEffect(() => {
         tokenCheck()
@@ -127,7 +115,7 @@ function App() {
 
     const handleLogout = () => {
         localStorage.clear();
-        history.push('/signin');
+        history.push('/');
     }
 
     return (
