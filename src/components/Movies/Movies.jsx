@@ -23,21 +23,6 @@ function Movies() {
     const [cardsTabletNumber, setCardsTabletNumber] = useState(0);
     const [cardsComputerNumber, setCardsComputerNumber] = useState(0);
 
-
-    useEffect(() => {
-        if (localStorage.getItem('foundMovies')) {
-            setIsPreloaderVisible(false);
-            setFoundMovies(JSON.parse(localStorage.foundMovies));
-            setFilterError(false);
-        }
-        /*
-        if (shortMovies.length !== 0 && foundMovies.length !== 0) {
-            setIsPreloaderVisible(false);
-            setFoundMovies(JSON.parse(localStorage.foundMovies));
-            setFilterError(false);
-        } */
-    }, [])
-
     useEffect(() => {
         //получение данных о пользователе и сохраненных фильмах
         Promise.all([mainApi.getSavedMovies(localStorage.getItem('token')), moviesApi.getMovies()])
@@ -47,7 +32,14 @@ function Movies() {
             })
             .catch(err => console.log(err));
     }, []);
-   
+
+    useEffect(() => {
+        if (localStorage.getItem('foundMovies')) {
+            setIsPreloaderVisible(false);
+            setFoundMovies(JSON.parse(localStorage.foundMovies));
+            setFilterError(false);
+        }
+    }, [])
     
     useEffect(() => {
         if (localStorage.getItem('shortMovies') || localStorage.getItem('foundMovies')) {
@@ -91,8 +83,7 @@ function Movies() {
         });
         return filtredMovies
     }
-    
-    
+
     //поиск по ключевому слову
     const handleFilter = (keyword) => {
         setFilterError(false);
