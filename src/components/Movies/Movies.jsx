@@ -15,6 +15,7 @@ function Movies() {
     const [filterError, setFilterError] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
     const [isButtonVisible, setIsButtonVisible] = useState(false);
+    const [allMovies, setAllMovies] = useState([]);
     const [foundMovies, setFoundMovies] = useState([]);
     const [shortMovies, setShortMovies] = useState([]);
     const [savedMovies, setSavedMovies] = useState([]);
@@ -24,18 +25,25 @@ function Movies() {
 
 
     useEffect(() => {
-        if (shortMovies.length !== 0 && foundMovies.length !== 0) {
+        if (localStorage.getItem('foundMovies')) {
             setIsPreloaderVisible(false);
             setFoundMovies(JSON.parse(localStorage.foundMovies));
             setFilterError(false);
         }
-    }, [isChecked])
+        /*
+        if (shortMovies.length !== 0 && foundMovies.length !== 0) {
+            setIsPreloaderVisible(false);
+            setFoundMovies(JSON.parse(localStorage.foundMovies));
+            setFilterError(false);
+        } */
+    }, [])
 
     useEffect(() => {
         //получение данных о пользователе и сохраненных фильмах
-        Promise.all([mainApi.getSavedMovies(localStorage.getItem('token'))])
-            .then(([movies]) => {
-                setSavedMovies(movies);
+        Promise.all([mainApi.getSavedMovies(localStorage.getItem('token')), moviesApi.getMovies()])
+            .then(([savedMovies, allMovies]) => {
+                setSavedMovies(savedMovies);
+                setAllMovies(allMovies);
             })
             .catch(err => console.log(err));
     }, []);
@@ -88,29 +96,26 @@ function Movies() {
     //поиск по ключевому слову
     const handleFilter = (keyword) => {
         setFilterError(false);
-        moviesApi.getMovies()
-            .then((movies) => {
-                const filtredMovies = filterMovies(movies, keyword);
-                localStorage.setItem('foundMovies', JSON.stringify(filtredMovies));
-                setFoundMovies(filtredMovies);
+        const filtredMovies = filterMovies(allMovies, keyword);
+        localStorage.setItem('foundMovies', JSON.stringify(filtredMovies));
+        setFoundMovies(filtredMovies);
 
-                if (!isChecked) {
-                    if (filtredMovies.length === 0) {
-                        handleUnsuccessfulFilter('foundMovies');
-                    } 
-                } else {
-                    const shortFiltredMovies = filtredMovies.filter(movie => {
-                        return movie.duration < 40;
-                    })
-                    if (shortFiltredMovies.length === 0) {
-                        handleUnsuccessfulFilter('shortMovies');
-                    } else {
-                        setShortMovies(shortFiltredMovies);
-                        localStorage.setItem('shortMovies', JSON.stringify(shortFiltredMovies)); 
-                    }
-                }
-                setIsPreloaderVisible(false);
+        if (!isChecked) {
+            if (filtredMovies.length === 0) {
+                handleUnsuccessfulFilter('foundMovies');
+            } 
+        } else {
+            const shortFiltredMovies = filtredMovies.filter(movie => {
+                return movie.duration < 40;
             })
+            if (shortFiltredMovies.length === 0) {
+                handleUnsuccessfulFilter('shortMovies');
+            } else {
+                setShortMovies(shortFiltredMovies);
+                localStorage.setItem('shortMovies', JSON.stringify(shortFiltredMovies)); 
+            }
+        }
+        setIsPreloaderVisible(false);
     }
 
     //клик по переключателю
@@ -206,7 +211,7 @@ function Movies() {
         } else if (TABLET) {
             setCardsTabletNumber(state => state + 2);
         } else if (COMPUTER) {
-            setCardsComputerNumber(state => state + 5);
+            setCardsComputerNumber(state => state + 3);
         } 
     }
 
