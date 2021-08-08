@@ -5,17 +5,16 @@ import Footer from "../Footer/Footer";
 import "./Movies.css";
 import { useState, useEffect } from "react";
 import Preloader from "../Preloader/Preloader";
-import { moviesApi } from "../../utils/MoviesApi";
+//import { moviesApi } from "../../utils/MoviesApi";
 import { mainApi } from '../../utils/MainApi';
 import { MOBILE, TABLET, COMPUTER } from '../../utils/constants';
 
-function Movies() {
+function Movies({allMovies}) {
 
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
     const [filterError, setFilterError] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
     const [isButtonVisible, setIsButtonVisible] = useState(false);
-    const [allMovies, setAllMovies] = useState([]);
     const [foundMovies, setFoundMovies] = useState([]);
     const [shortMovies, setShortMovies] = useState([]);
     const [savedMovies, setSavedMovies] = useState([]);
@@ -25,10 +24,9 @@ function Movies() {
 
     useEffect(() => {
         //получение данных о пользователе и сохраненных фильмах
-        Promise.all([mainApi.getSavedMovies(localStorage.getItem('token')), moviesApi.getMovies()])
-            .then(([savedMovies, allMovies]) => {
+        Promise.all([mainApi.getSavedMovies(localStorage.getItem('token'))])
+            .then(([savedMovies]) => {
                 setSavedMovies(savedMovies);
-                setAllMovies(allMovies);
             })
             .catch(err => console.log(err));
     }, []);

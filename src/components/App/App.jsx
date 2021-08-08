@@ -16,6 +16,7 @@ import {mainApi} from '../../utils/MainApi';
 import Popup from "../Popup/Popup";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import Error from "../Error/Error";
+import { moviesApi } from "../../utils/MoviesApi";
 
 function App() {
 
@@ -24,11 +25,19 @@ function App() {
     const [message, setMessage] = useState('');
     const [currentUser, setCurrentUser] = useState({name:'', email:''});
     const [isDisabled, setIsDisabled] = useState(false);
+    const [allMovies, setAllMovies] = useState([]);
 
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
 
     useEffect(() => {
         tokenCheck()
+    }, []);
+
+    useEffect(() => {
+        moviesApi.getMovies()
+            .then((movies) => {
+                setAllMovies(movies);
+            })
     }, []);
 
     useEffect(() => {
@@ -141,6 +150,7 @@ function App() {
                     <ProtectedRoute 
                         path="/movies" 
                         component={Movies}
+                        allMovies={allMovies}
                     >
                     </ProtectedRoute>
                     <ProtectedRoute 
