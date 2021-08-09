@@ -26,12 +26,23 @@ function App() {
     const [currentUser, setCurrentUser] = useState({name:'', email:''});
     const [isDisabled, setIsDisabled] = useState(false);
     const [allMovies, setAllMovies] = useState([]);
-
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
+    const [moviesLength, setMoviesLength] = useState(0);
+    const [addedMovies, setAddedMovies] = useState(0);
 
     useEffect(() => {
-        tokenCheck()
+        tokenCheck();
+        handleMoviesLength();
     }, []);
+
+    useEffect(() => {
+        window.addEventListener('resize', () => {
+            setTimeout(() => {
+                setAddedMovies(0);
+                handleMoviesLength();
+            }, 1000); 
+        });
+    }, [])
 
     useEffect(() => {
         moviesApi.getMovies()
@@ -48,6 +59,17 @@ function App() {
 
     const handlePopupClose = () => {
         setIsPopupOpen(false);
+    }
+
+    const handleMoviesLength = () => {
+        const windowWidth = document.body.clientWidth;
+        if (windowWidth >= 320 && windowWidth <= 480) {
+            setMoviesLength(5);
+        } else if (windowWidth > 480 && windowWidth < 1137) {
+            setMoviesLength(8);
+        } else if (windowWidth >= 1137) {
+            setMoviesLength(12);
+        }
     }
 
     const handleRegister = (data, setData, setIsValid, setErrors, resetForm) => {
@@ -151,6 +173,10 @@ function App() {
                         path="/movies" 
                         component={Movies}
                         allMovies={allMovies}
+                        moviesLength={moviesLength}
+                        addedMovies={addedMovies}
+                        setAddedMovies={setAddedMovies}
+                        setMoviesLength={setMoviesLength}
                     >
                     </ProtectedRoute>
                     <ProtectedRoute 

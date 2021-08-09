@@ -5,11 +5,9 @@ import Footer from "../Footer/Footer";
 import "./Movies.css";
 import { useState, useEffect } from "react";
 import Preloader from "../Preloader/Preloader";
-//import { moviesApi } from "../../utils/MoviesApi";
 import { mainApi } from '../../utils/MainApi';
-import { MOBILE, TABLET, COMPUTER } from '../../utils/constants';
 
-function Movies({allMovies}) {
+function Movies({allMovies, moviesLength, addedMovies, setAddedMovies}) {
 
     const [isPreloaderVisible, setIsPreloaderVisible] = useState(false);
     const [filterError, setFilterError] = useState(false);
@@ -18,9 +16,6 @@ function Movies({allMovies}) {
     const [foundMovies, setFoundMovies] = useState([]);
     const [shortMovies, setShortMovies] = useState([]);
     const [savedMovies, setSavedMovies] = useState([]);
-    const [cardsMobileNumber, setCardsMobileNumber] = useState(0);
-    const [cardsTabletNumber, setCardsTabletNumber] = useState(0);
-    const [cardsComputerNumber, setCardsComputerNumber] = useState(0);
 
     useEffect(() => {
         //получение данных о пользователе и сохраненных фильмах
@@ -42,7 +37,7 @@ function Movies({allMovies}) {
     useEffect(() => {
         if (localStorage.getItem('shortMovies') || localStorage.getItem('foundMovies')) {
             handleButtonVisibility();
-        }   
+        };
     })
 
     const handleButtonVisibility = () => {
@@ -54,10 +49,9 @@ function Movies({allMovies}) {
     }
 
     const setButtonVisibility = (arrayLength) => {
+
         if (
-            ((cardsComputerNumber + 12) < arrayLength && COMPUTER) ||
-            ((cardsTabletNumber + 8) < arrayLength && TABLET) ||
-            ((cardsMobileNumber + 5) < arrayLength && MOBILE))
+            ((addedMovies + moviesLength) < arrayLength))
             {
                 setIsButtonVisible(true);
         } else {
@@ -111,9 +105,7 @@ function Movies({allMovies}) {
     const handleCheckboxClick = (isChecked) => {
         setFilterError(false);
         setIsPreloaderVisible(true);
-        setCardsComputerNumber(0);
-        setCardsMobileNumber(0);
-        setCardsTabletNumber(0);
+        setAddedMovies(0);
         if (isChecked) {
             const shortMoviesList = foundMovies.filter((movie) => {
                 return movie.duration < 40;
@@ -195,12 +187,12 @@ function Movies({allMovies}) {
     }
 
     const loadMore = () => {
-        if (MOBILE) {
-            setCardsMobileNumber(state => state + 2);
-        } else if (TABLET) {
-            setCardsTabletNumber(state => state + 2);
-        } else if (COMPUTER) {
-            setCardsComputerNumber(state => state + 3);
+        if (document.body.clientWidth >= 320 && document.body.clientWidth <= 480) {
+            setAddedMovies(state => state + 2);
+        } else if ( document.body.clientWidth > 480 &&  document.body.clientWidth < 1280) {
+            setAddedMovies(state => state + 2);
+        } else if ( document.body.clientWidth >= 1280) {
+            setAddedMovies(state => state + 3);
         } 
     }
 
@@ -216,17 +208,16 @@ function Movies({allMovies}) {
                                         onChangeButtonStatus={handlechangeMovieButtonStatus}
                                         savedMovies={savedMovies}
                                         list={shortMovies}
-                                        cardsMobileNumber={cardsMobileNumber}
-                                        cardsComputerNumber={cardsComputerNumber}
+                                        moviesLength={moviesLength}
+                                        addedMovies={addedMovies}
                                     />) : 
                                         foundMovies.length === 0 ? (<h2 className="movies__filter-error">Ничего не найдено</h2>) : 
                                         (<MoviesCardList 
                                             onChangeButtonStatus={handlechangeMovieButtonStatus}
                                             savedMovies={savedMovies} 
                                             list={foundMovies} 
-                                            cardsMobileNumber={cardsMobileNumber}
-                                            cardsTabletNumber={cardsTabletNumber}
-                                            cardsComputerNumber={cardsComputerNumber}
+                                            moviesLength={moviesLength}
+                                            addedMovies={addedMovies}
                                         />)
                 }
                 <button onClick={loadMore} className={`movies__button ${isButtonVisible ? '' : 'movies__button_invisible'}`}>Еще</button>
