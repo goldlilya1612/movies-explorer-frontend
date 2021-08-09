@@ -40,7 +40,7 @@ function App() {
             setTimeout(() => {
                 setAddedMovies(0);
                 handleMoviesLength();
-            }, 1000); 
+            }, 1000) 
         });
     }, [])
 

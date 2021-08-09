@@ -1,5 +1,5 @@
-//export const BASE_URL = "https://api.diploma.nomoredomains.work";
-export const BASE_URL = "http://localhost:3005";
+export const BASE_URL = "https://api.diploma.nomoredomains.work";
+//export const BASE_URL = "http://localhost:3005";
 
 export const register = ({ email, password, name }) => {
     return fetch(`${BASE_URL}/signup`, {

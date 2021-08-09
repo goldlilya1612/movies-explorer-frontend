@@ -39,6 +39,7 @@ function SavedMovies() {
         setIsPreloaderVisible(false);
     }
 
+
     //поиск по ключевому слову
     const handleFilter = (keyword) => {
         setFilterError(false);
@@ -57,6 +58,7 @@ function SavedMovies() {
         localStorage.setItem('savedFoundMovies', JSON.stringify(filtredMovies));
         setSavedFoundMovies(filtredMovies);
     }
+
 
     //клик по переключателю
     const handleCheckboxClick = (isChecked) => {
@@ -84,7 +86,7 @@ function SavedMovies() {
     const handleDelete = (movie) => {
         mainApi.deleteMovie(movie._id, localStorage.getItem('token'))
             .then(() => {
-                setSavedFoundMovies((state) => state.filter((c) => c.movieId !== movie.movieId))
+                setSavedFoundMovies((state) => state.filter((c) => c.movieId !== movie.movieId));
             })
             .catch((err) => console.log(`Ошибка: ${err}`))
     }

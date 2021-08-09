@@ -18,7 +18,7 @@ function Movies({allMovies, moviesLength, addedMovies, setAddedMovies}) {
     const [savedMovies, setSavedMovies] = useState([]);
 
     useEffect(() => {
-        //получение данных о пользователе и сохраненных фильмах
+        //получение данных о сохраненных фильмах
         Promise.all([mainApi.getSavedMovies(localStorage.getItem('token'))])
             .then(([savedMovies]) => {
                 setSavedMovies(savedMovies);
@@ -189,9 +189,9 @@ function Movies({allMovies, moviesLength, addedMovies, setAddedMovies}) {
     const loadMore = () => {
         if (document.body.clientWidth >= 320 && document.body.clientWidth <= 480) {
             setAddedMovies(state => state + 2);
-        } else if ( document.body.clientWidth > 480 &&  document.body.clientWidth < 1280) {
+        } else if ( document.body.clientWidth > 480 &&  document.body.clientWidth < 1137) {
             setAddedMovies(state => state + 2);
-        } else if ( document.body.clientWidth >= 1280) {
+        } else if ( document.body.clientWidth >= 1137) {
             setAddedMovies(state => state + 3);
         } 
     }
