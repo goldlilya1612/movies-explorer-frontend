@@ -1,9 +1,9 @@
-.section-with-form__form_login {
-    margin-bottom: 249px;
+.section-with-form__wrapper_login {
+    margin-top: 249px;
 }
 
 @media screen and (min-width: 768px) {
-    .section-with-form__form_login {
-        margin-bottom: 169px;
+    .section-with-form__wrapper_login {
+        margin-top: 169px;
     }
 }

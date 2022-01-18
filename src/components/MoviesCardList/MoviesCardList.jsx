@@ -1,11 +1,25 @@
 import MoviesCard from "../MoviesCard/MoviesCard";
 import "./MoviesCardList.css";
-import { cards } from "../../utils/constants";
 
-function MoviesCardList() {
+function MoviesCardList(
+    {list,
+     onChangeButtonStatus, 
+     onDelete, 
+     savedMovies,
+     moviesLength, 
+     addedMovies
+     }) {
+
     return (
-        <section className="movies-card-list">
-            {cards. map(card => (<MoviesCard card={card}/>) )}
+        <section className={`movies-card-list`}>
+            {
+                window.location.pathname === '/movies' &&
+                list.slice(0, moviesLength + addedMovies).map(movie => (<MoviesCard savedMovies={savedMovies} key={movie.id} movie={movie} onChangeButtonStatus={onChangeButtonStatus}/>))
+            }
+            {
+                window.location.pathname === '/saved-movies' &&
+                list.map(movie =>(<MoviesCard onDelete={onDelete} savedMovies={savedMovies} key={movie._id} movie={movie} />))
+            }
         </section>
     );
 }

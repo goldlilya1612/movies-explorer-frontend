@@ -1,0 +1,10 @@
+.saved-movies {
+    position: relative;
+    min-height: calc(100vh - 74px - 268px);
+}
+
+@media screen and (min-width: 768px) {
+    .saved-movies {
+        min-height: calc(100vh - 74px - 193px);
+    }
+}
