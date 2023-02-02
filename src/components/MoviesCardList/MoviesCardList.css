@@ -7,6 +7,10 @@
     justify-content: center;
 }
 
+.movies-card-list_invisible {
+    display: none;
+}
+
 @media screen and (min-width: 400px) {
     .movies-card-list {
         margin: 0 6.5%;

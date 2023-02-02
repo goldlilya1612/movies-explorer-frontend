@@ -37,7 +37,7 @@
     font-weight: normal;
     font-size: 10px;
     line-height: 12px;
-    height: 90px;
+    height: 102px;
 
     color: #8b8b8b;
 
@@ -107,6 +107,15 @@
     cursor: pointer;
 }
 
+.section-with-form__button_invalid {
+    background-color: #f8f8f8;
+    color: #c2c2c2;
+}
+
+.section-with-form__button_invalid:hover {
+    background-color: #f8f8f8;
+}
+
 .section-with-form__text {
     font-weight: normal;
     font-size: 12px;
@@ -146,10 +155,6 @@ label:last-of-type {
         justify-content: center;
     }
 
-    .section-with-form__form_register {
-        margin-bottom: 69px;
-    }
-
     .section-with-form__top {
         width: 396px;
         margin-bottom: 40px;
@@ -170,6 +175,7 @@ label:last-of-type {
 
     .section-with-form__wrapper {
         position: initial;
+        width: 100%;
     }
 }
 
@@ -186,10 +192,6 @@ label:last-of-type {
 
     .section-with-form__title {
         margin-top: 25px;
-    }
-
-    .section-with-form__form_register {
-        margin-bottom: 30px;
     }
 }
 

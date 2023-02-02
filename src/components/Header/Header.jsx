@@ -5,9 +5,7 @@ import Logo from "../Logo/Logo";
 
 const Header = () => {
 
-    //В зависимости от переменной isAuthorised меняется хедер на странице Main.
-    const isAuthorised = false;
-    const notMainPage = window.location.pathname !== '/'
+    const notMainPage = window.location.pathname !== '/';
 
     return (
         <>
@@ -16,9 +14,9 @@ const Header = () => {
                 <Logo />
                 <NavigationAuthorized />
             </header>) :
-            (<header className={`header ${isAuthorised ? 'header_authorized' : ''}`}>
+            (<header className={`header ${localStorage.getItem('loggedIn') ? 'header_authorized' : ''}`}>
                 <Logo />
-                {isAuthorised ? (<NavigationAuthorized />) : (<NavigationUnauthorized />) }
+                {localStorage.getItem('loggedIn') ? (<NavigationAuthorized />) : (<NavigationUnauthorized />) }
             </header>)
         }
         </>    
